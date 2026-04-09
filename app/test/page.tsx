@@ -1,3 +1,7 @@
 export default function TestPage() {
-  return <main style={{ padding: 40, fontSize: 24 }}>test route works</main>;
+  return (
+    <main style={{ padding: "40px", fontSize: "24px" }}>
+      test route works
+    </main>
+  );
 }

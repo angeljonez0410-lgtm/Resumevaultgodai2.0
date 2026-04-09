@@ -56,7 +56,7 @@ export default function LoginForm() {
         Send Magic Link
       </button>
 
-      {message && <p className="mt-4 text-sm text-gray-600">{message}</p>}
+      {message ? <p className="mt-4 text-sm text-gray-600">{message}</p> : null}
     </div>
   );
 }
