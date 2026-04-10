@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { getSupabaseBrowser } from "../lib/supabase-browser";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -9,27 +8,22 @@ export default function LoginForm() {
 
   async function handleLogin() {
     try {
-      const supabase = getSupabaseBrowser();
+      const redirectTo = `${window.location.origin}/auth/callback`;
 
-
-      const redirectUrl =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/auth/callback`
-          : "";
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: redirectUrl,
-        },
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, redirectTo }),
       });
 
-      if (error) {
-        setMessage(error.message);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMessage(data.error || "Something went wrong.");
         return;
       }
 
-      setMessage("Magic link sent. Check your email.");
+      setMessage(data.message);
     } catch {
       setMessage("Something went wrong.");
     }
