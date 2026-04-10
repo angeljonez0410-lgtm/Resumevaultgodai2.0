@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import CreatePostForm from "../../../components/CreatePostForm";
 import PostsTable from "../../../components/PostsTable";
 import LogsPanel from "../../../components/LogsPanel";
@@ -123,12 +124,20 @@ export default function SocialBotPage() {
             <p className="text-gray-600 mt-1">Manage content and activity</p>
           </div>
 
-          <button
-            onClick={logout}
-            className="bg-gray-200 px-4 py-2 rounded-xl font-semibold hover:bg-gray-300"
-          >
-            Logout
-          </button>
+          <div className="flex gap-3">
+            <Link
+              href="/admin/social-bot/accounts"
+              className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl font-semibold hover:bg-indigo-200 text-sm"
+            >
+              Social Accounts
+            </Link>
+            <button
+              onClick={logout}
+              className="bg-gray-200 px-4 py-2 rounded-xl font-semibold hover:bg-gray-300 text-sm"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl shadow p-6">
