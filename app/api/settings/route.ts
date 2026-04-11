@@ -1,7 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
+import { getAuthUser, unauthorized } from "../../../lib/auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const supabase = getSupabaseAdmin();
 
@@ -28,7 +30,8 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const body = await req.json();
     const { brand_voice, target_audience, post_frequency } = body;

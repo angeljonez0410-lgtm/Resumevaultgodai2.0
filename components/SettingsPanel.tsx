@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authFetch } from "../lib/auth-fetch";
 
 export default function SettingsPanel({
   onSaved,
@@ -12,12 +13,8 @@ export default function SettingsPanel({
   const [postFrequency, setPostFrequency] = useState("daily");
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    loadSettings();
-  }, []);
-
   async function loadSettings() {
-    const res = await fetch("/api/settings");
+    const res = await authFetch("/api/settings");
     const data = await res.json();
 
     if (data.settings) {
@@ -27,10 +24,15 @@ export default function SettingsPanel({
     }
   }
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadSettings();
+  }, []);
+
   async function saveSettings() {
     setMessage("");
 
-    const res = await fetch("/api/settings", {
+    const res = await authFetch("/api/settings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

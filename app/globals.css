@@ -3,6 +3,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --sidebar-bg: #1e2d42;
+  --sidebar-hover: #2a3f5f;
+  --gold: #f4c542;
+  --gold-dark: #e0b02f;
+  --navy: #1e2d42;
+  --navy-light: #2a3f5f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,3 +58,23 @@ button {
 .label {
   @apply mb-1 block text-sm font-semibold text-gray-700;
 }
+
+/* Scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #2a3f5f;
+  border-radius: 4px;
+}
+
+/* Markdown content styling */
+.prose-resume h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.prose-resume h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; }
+.prose-resume h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.25rem; }
+.prose-resume ul { list-style-type: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
+.prose-resume li { margin: 0.25rem 0; font-size: 0.875rem; }
+.prose-resume p { margin: 0.5rem 0; font-size: 0.875rem; }

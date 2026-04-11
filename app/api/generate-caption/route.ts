@@ -1,12 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
+import { getAuthUser, unauthorized } from "../../../lib/auth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const body = await req.json();
     const { topic } = body;
@@ -66,7 +68,7 @@ Keep it platform-neutral and ready for Instagram, LinkedIn, or Twitter.
     });
 
     return NextResponse.json({ caption });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to generate caption" },
       { status: 500 }

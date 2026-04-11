@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authFetch } from "../lib/auth-fetch";
 
 type MediaFile = {
   name: string;
@@ -19,12 +20,8 @@ export default function MediaLibrary({
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    loadFiles();
-  }, [refreshKey]);
-
   async function loadFiles() {
-    const res = await fetch("/api/media-library");
+    const res = await authFetch("/api/media-library");
     const data = await res.json();
 
     if (!res.ok) {
@@ -34,6 +31,11 @@ export default function MediaLibrary({
 
     setFiles(data.files || []);
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadFiles();
+  }, [refreshKey]);
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { authFetch } from "../lib/auth-fetch";
 
 type Message = {
   role: "user" | "assistant";
@@ -53,7 +54,7 @@ export default function AIChatPanel() {
       const user = localStorage.getItem("sb_user");
       const userName = user ? JSON.parse(user).email?.split("@")[0] : undefined;
 
-      const res = await fetch("/api/ai-chat", {
+      const res = await authFetch("/api/ai-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,7 +76,7 @@ export default function AIChatPanel() {
         // Show action confirmations
         if (data.actions?.length) {
           const actionSummary = data.actions
-            .map((a: any) =>
+            .map((a: { success: boolean; action: string; error?: string }) =>
               a.success ? `✅ ${a.action} completed` : `❌ ${a.action} failed: ${a.error}`
             )
             .join("\n");

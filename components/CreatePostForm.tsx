@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { authFetch } from "../lib/auth-fetch";
 
 export default function CreatePostForm({
   onCreated,
@@ -31,7 +32,7 @@ export default function CreatePostForm({
     setLoadingCaption(true);
     setMessage("");
 
-    const res = await fetch("/api/generate-caption", {
+    const res = await authFetch("/api/generate-caption", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +62,7 @@ export default function CreatePostForm({
     setLoadingImage(true);
     setMessage("");
 
-    const res = await fetch("/api/generate-image", {
+    const res = await authFetch("/api/generate-image", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +92,7 @@ export default function CreatePostForm({
     setLoadingPhotoPrompt(true);
     setMessage("");
 
-    const res = await fetch("/api/generate-real-photo-prompt", {
+    const res = await authFetch("/api/generate-real-photo-prompt", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -124,7 +125,7 @@ export default function CreatePostForm({
     setLoadingVideoPrompt(true);
     setMessage("");
 
-    const res = await fetch("/api/generate-video-prompt", {
+    const res = await authFetch("/api/generate-video-prompt", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -151,7 +152,7 @@ export default function CreatePostForm({
   async function handleSubmit() {
     setMessage("");
 
-    const res = await fetch("/api/posts", {
+    const res = await authFetch("/api/posts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

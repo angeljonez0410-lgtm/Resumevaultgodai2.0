@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       success: true,
       ...result,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to publish scheduled posts" },
       { status: 500 }

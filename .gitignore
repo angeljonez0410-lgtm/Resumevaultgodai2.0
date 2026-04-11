@@ -44,3 +44,12 @@ postcss.config.js
 tailwind.config.js
 jsconfig.json
 next-env.d.ts
+
+# Base44 leftover eslint config (using eslint.config.mjs)
+eslint.config.js
+
+# Base44 leftover files
+index.html
+vite.config.js
+components.json
+jsconfig.json

@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { authFetch } from "../../../lib/auth-fetch";
 import CreatePostForm from "../../../components/CreatePostForm";
 import PostsTable from "../../../components/PostsTable";
 import LogsPanel from "../../../components/LogsPanel";
@@ -24,8 +25,8 @@ type Analytics = {
 
 export default function SocialBotPage() {
   const [email, setEmail] = useState("");
-  const [posts, setPosts] = useState<any[]>([]);
-  const [logs, setLogs] = useState<any[]>([]);
+  const [posts, setPosts] = useState<{ id: string; platform: string; topic: string; status: string; created_at: string }[]>([]);
+  const [logs, setLogs] = useState<{ id: string; action: string; result: string; created_at: string }[]>([]);
   const [analytics, setAnalytics] = useState<Analytics>({
     totalPosts: 0,
     drafts: 0,
@@ -35,6 +36,29 @@ export default function SocialBotPage() {
     totalLogs: 0,
   });
   const router = useRouter();
+
+  async function loadData() {
+    const postsRes = await authFetch("/api/posts");
+    const postsData = await postsRes.json();
+    setPosts(postsData.posts || []);
+
+    const logsRes = await authFetch("/api/logs");
+    const logsData = await logsRes.json();
+    setLogs(logsData.logs || []);
+
+    const analyticsRes = await authFetch("/api/analytics");
+    const analyticsData = await analyticsRes.json();
+    setAnalytics(
+      analyticsData.analytics || {
+        totalPosts: 0,
+        drafts: 0,
+        scheduled: 0,
+        posted: 0,
+        failed: 0,
+        totalLogs: 0,
+      }
+    );
+  }
 
   useEffect(() => {
     async function checkUser() {
@@ -47,9 +71,7 @@ export default function SocialBotPage() {
       }
 
       // Verify token is still valid server-side
-      const res = await fetch("/api/auth/me", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const res = await authFetch("/api/auth/me");
       const data = await res.json();
 
       if (!data.user) {
@@ -64,7 +86,7 @@ export default function SocialBotPage() {
 
       // Log dashboard login
       if (!sessionStorage.getItem("login_logged")) {
-        fetch("/api/activity", {
+        authFetch("/api/activity", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ platform: "system", action: "login", username: data.user.email, detail: "Logged into dashboard" }),
@@ -78,32 +100,9 @@ export default function SocialBotPage() {
     checkUser();
   }, [router]);
 
-  async function loadData() {
-    const postsRes = await fetch("/api/posts");
-    const postsData = await postsRes.json();
-    setPosts(postsData.posts || []);
-
-    const logsRes = await fetch("/api/logs");
-    const logsData = await logsRes.json();
-    setLogs(logsData.logs || []);
-
-    const analyticsRes = await fetch("/api/analytics");
-    const analyticsData = await analyticsRes.json();
-    setAnalytics(
-      analyticsData.analytics || {
-        totalPosts: 0,
-        drafts: 0,
-        scheduled: 0,
-        posted: 0,
-        failed: 0,
-        totalLogs: 0,
-      }
-    );
-  }
-
   async function logout() {
     // Log dashboard logout
-    fetch("/api/activity", {
+    authFetch("/api/activity", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ platform: "system", action: "logout", username: email, detail: "Logged out of dashboard" }),

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { authFetch } from "../../../../lib/auth-fetch";
 
 type ConnectedAccount = {
   platform: string;
@@ -79,21 +80,9 @@ export default function AccountsPage() {
   const [connectingPlatform, setConnectingPlatform] = useState<string | null>(null);
   const [usernameInput, setUsernameInput] = useState("");
 
-  useEffect(() => {
-    if (!localStorage.getItem("sb_access_token")) {
-      router.push("/admin/login");
-      return;
-    }
-    const stored = localStorage.getItem("connected_accounts");
-    if (stored) {
-      setAccounts(JSON.parse(stored));
-    }
-    loadActivity();
-  }, [router]);
-
   async function loadActivity() {
     try {
-      const res = await fetch("/api/activity");
+      const res = await authFetch("/api/activity");
       const data = await res.json();
       setRecentActivity(
         (data.activities || []).filter(
@@ -103,13 +92,27 @@ export default function AccountsPage() {
     } catch { /* silent */ }
   }
 
+  useEffect(() => {
+    if (!localStorage.getItem("sb_access_token")) {
+      router.push("/admin/login");
+      return;
+    }
+    const stored = localStorage.getItem("connected_accounts");
+    if (stored) {
+      const parsed: ConnectedAccount[] = JSON.parse(stored);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAccounts(parsed);
+    }
+    loadActivity();
+  }, [router]);
+
   function saveAccounts(updated: ConnectedAccount[]) {
     setAccounts(updated);
     localStorage.setItem("connected_accounts", JSON.stringify(updated));
   }
 
   async function logActivity(platform: string, action: string, username: string, detail: string) {
-    await fetch("/api/activity", {
+    await authFetch("/api/activity", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ platform, action, username, detail }),
@@ -169,13 +172,13 @@ export default function AccountsPage() {
     logActivity(platformId, "disconnect", account.username, `Disconnected ${platformId} account @${account.username}`);
   }
 
-  function timeAgo(date: string) {
+  const timeAgo = useCallback((date: string) => {
     const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
     if (diff < 60) return "just now";
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
-  }
+  }, []);
 
   const loggedInCount = accounts.filter(a => a.logged_in).length;
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { authFetch } from "../lib/auth-fetch";
 
 export default function CalendarGenerator({
   onGenerated,
@@ -14,7 +15,7 @@ export default function CalendarGenerator({
     setLoading(true);
     setMessage("");
 
-    const res = await fetch("/api/generate-calendar", {
+    const res = await authFetch("/api/generate-calendar", {
       method: "POST",
     });
 

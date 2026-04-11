@@ -1,6 +1,16 @@
 import { getSupabaseAdmin } from "./supabase-admin";
 import { formatCaptionForPlatform } from "./formatters";
 
+type SocialPost = {
+  id: string;
+  platform: string;
+  caption?: string | null;
+  topic: string;
+  media_url?: string;
+  scheduled_time?: string;
+  status?: string;
+};
+
 type PublishResult = {
   success: boolean;
   externalPostId?: string;
@@ -8,7 +18,7 @@ type PublishResult = {
   finalCaption?: string;
 };
 
-async function publishToInstagram(post: any): Promise<PublishResult> {
+async function publishToInstagram(post: SocialPost): Promise<PublishResult> {
   const finalCaption = formatCaptionForPlatform(post);
 
   return {
@@ -18,7 +28,7 @@ async function publishToInstagram(post: any): Promise<PublishResult> {
   };
 }
 
-async function publishToTwitter(post: any): Promise<PublishResult> {
+async function publishToTwitter(post: SocialPost): Promise<PublishResult> {
   const finalCaption = formatCaptionForPlatform(post);
 
   return {
@@ -28,7 +38,7 @@ async function publishToTwitter(post: any): Promise<PublishResult> {
   };
 }
 
-async function publishToLinkedIn(post: any): Promise<PublishResult> {
+async function publishToLinkedIn(post: SocialPost): Promise<PublishResult> {
   const finalCaption = formatCaptionForPlatform(post);
 
   return {
@@ -38,7 +48,7 @@ async function publishToLinkedIn(post: any): Promise<PublishResult> {
   };
 }
 
-async function publishToTikTok(post: any): Promise<PublishResult> {
+async function publishToTikTok(post: SocialPost): Promise<PublishResult> {
   const finalCaption = formatCaptionForPlatform(post);
 
   return {
@@ -48,7 +58,7 @@ async function publishToTikTok(post: any): Promise<PublishResult> {
   };
 }
 
-async function publishToReddit(post: any): Promise<PublishResult> {
+async function publishToReddit(post: SocialPost): Promise<PublishResult> {
   const finalCaption = formatCaptionForPlatform(post);
 
   return {
@@ -58,7 +68,7 @@ async function publishToReddit(post: any): Promise<PublishResult> {
   };
 }
 
-async function publishToThreads(post: any): Promise<PublishResult> {
+async function publishToThreads(post: SocialPost): Promise<PublishResult> {
   const finalCaption = formatCaptionForPlatform(post);
 
   return {
@@ -68,7 +78,7 @@ async function publishToThreads(post: any): Promise<PublishResult> {
   };
 }
 
-async function publishPost(post: any): Promise<PublishResult> {
+async function publishPost(post: SocialPost): Promise<PublishResult> {
   switch (post.platform) {
     case "instagram":
       return publishToInstagram(post);

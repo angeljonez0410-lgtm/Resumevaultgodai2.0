@@ -1,7 +1,15 @@
+type PostEntry = {
+  id: string;
+  platform: string;
+  topic: string;
+  status: string;
+  created_at: string;
+};
+
 export default function PostsTable({
   posts,
 }: {
-  posts: any[];
+  posts: PostEntry[];
 }) {
   return (
     <div className="bg-white rounded-2xl shadow p-6">

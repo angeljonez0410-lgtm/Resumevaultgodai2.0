@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
+import { getAuthUser, unauthorized } from "../../../lib/auth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,7 +13,8 @@ function addDays(base: Date, days: number) {
   return copy;
 }
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const supabase = getSupabaseAdmin();
 
@@ -61,7 +63,7 @@ Rules:
 
     const content = completion.choices[0]?.message?.content?.trim() || "[]";
 
-    let items: any[] = [];
+    let items: Record<string, unknown>[] = [];
 
     try {
       items = JSON.parse(content);

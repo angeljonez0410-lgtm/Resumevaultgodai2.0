@@ -1,7 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { formatCaptionForPlatform } from "../../../lib/formatters";
+import { getAuthUser, unauthorized } from "../../../lib/auth";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const body = await req.json();
     const { platform, topic, caption } = body;

@@ -1,7 +1,14 @@
+type LogEntry = {
+  id: string;
+  action: string;
+  result: string;
+  created_at: string;
+};
+
 export default function LogsPanel({
   logs,
 }: {
-  logs: any[];
+  logs: LogEntry[];
 }) {
   return (
     <div className="bg-white rounded-2xl shadow p-6">

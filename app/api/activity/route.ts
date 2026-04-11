@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
+import { getAuthUser, unauthorized } from "../../../lib/auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
@@ -21,6 +23,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const { platform, action, username, detail } = await req.json();
 

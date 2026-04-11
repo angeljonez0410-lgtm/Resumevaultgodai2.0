@@ -21,10 +21,25 @@ export async function POST(req: NextRequest) {
 
     const supabase = createClient(url, anonKey);
 
+    // Validate redirectTo to prevent open redirect
+    let safeRedirect: string | undefined;
+    if (redirectTo && typeof redirectTo === "string") {
+      const appUrl = process.env.APP_URL || "";
+      try {
+        const redirectUrl = new URL(redirectTo);
+        const appOrigin = appUrl ? new URL(appUrl).origin : undefined;
+        if (appOrigin && redirectUrl.origin === appOrigin) {
+          safeRedirect = redirectTo;
+        }
+      } catch {
+        // Invalid URL — ignore
+      }
+    }
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: redirectTo || undefined,
+        emailRedirectTo: safeRedirect,
       },
     });
 

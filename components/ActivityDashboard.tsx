@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authFetch } from "../lib/auth-fetch";
 
 type Activity = {
   id: string;
@@ -43,7 +44,7 @@ export default function ActivityDashboard() {
 
   async function loadActivities() {
     try {
-      const res = await fetch("/api/activity");
+      const res = await authFetch("/api/activity");
       const data = await res.json();
       setActivities(data.activities || []);
     } catch {

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
+import { getAuthUser, unauthorized } from "../../../lib/auth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 // Handle AI actions like creating posts, updating settings
-async function handleAction(action: any) {
+async function handleAction(action: Record<string, string>) {
   const supabase = getSupabaseAdmin();
 
   if (action.type === "create_post") {
@@ -69,6 +70,7 @@ async function handleAction(action: any) {
 }
 
 export async function POST(req: NextRequest) {
+  if (!(await getAuthUser(req))) return unauthorized();
   try {
     const { message, history, userName } = await req.json();
 
@@ -161,7 +163,7 @@ RULES:
     // Extract and execute actions
     const actionRegex = /\[ACTION:\s*(\{[^}]+\})\]/g;
     let match;
-    const actionResults: any[] = [];
+    const actionResults: Record<string, unknown>[] = [];
     while ((match = actionRegex.exec(reply)) !== null) {
       try {
         const action = JSON.parse(match[1]);
