@@ -1,23 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Mail, ArrowRight, Shield, Zap, Star } from "lucide-react";
+import { Sparkles, Mail, ArrowRight, Shield, Zap, Star, Lock } from "lucide-react";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mode, setMode] = useState<"magic" | "password" | "signup">("magic");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  // Switch between login/signup
+  const switchToLogin = () => { setMode("password"); setError(""); };
+  const switchToSignup = () => { setMode("signup"); setError(""); };
+
+  // Magic link login (admin only)
+  const handleMagicLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
     setLoading(true);
     setError("");
-
     try {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       const res = await fetch("/api/auth/login", {
@@ -41,7 +48,56 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  // Email/password login (any user)
+  const handlePasswordLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password) return;
+    setLoading(true);
+    setError("");
+    try {
+      const supabase = getSupabaseBrowser();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (signInError) {
+        setError(signInError.message);
+      } else {
+        window.location.href = "/app";
+      }
+    } catch {
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Email/password sign up (any user)
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password) return;
+    setLoading(true);
+    setError("");
+    try {
+      const supabase = getSupabaseBrowser();
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+      } else {
+        setSent(true);
+      }
+    } catch {
+      setError("Sign up failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async (isSignup = false) => {
     setGoogleLoading(true);
     setError("");
     try {
@@ -78,6 +134,7 @@ export default function LoginPage() {
       {/* Main */}
       <div className="flex-1 flex items-center justify-center px-6 pb-20">
         <div className="w-full max-w-md">
+
           {!sent ? (
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
               <div className="text-center mb-8">
@@ -85,43 +142,182 @@ export default function LoginPage() {
                   <Sparkles className="w-8 h-8 text-[#1e2d42]" />
                 </div>
                 <h1 className="text-2xl font-bold text-white mb-2">Welcome to ResumeVault GodAI</h1>
-                <p className="text-slate-300 text-sm">Sign in to access your AI-powered career toolkit</p>
+                <p className="text-slate-300 text-sm">Sign in or sign up to access your AI-powered career toolkit</p>
               </div>
 
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1.5">Email address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {error && (
-                  <p className="text-red-400 text-sm bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
-                )}
-
+              {/* Login/Signup mode switch */}
+              <div className="flex gap-2 mb-4">
                 <button
-                  type="submit"
-                  disabled={loading || !email.trim()}
-                  className="w-full bg-[#f4c542] text-[#1e2d42] font-bold py-3 rounded-xl hover:bg-[#e0b02f] disabled:opacity-50 transition flex items-center justify-center gap-2 text-sm"
+                  type="button"
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${mode === "magic" ? "bg-[#f4c542] text-[#1e2d42]" : "bg-white/10 text-white"}`}
+                  onClick={() => { setMode("magic"); setError(""); }}
+                  disabled={mode === "magic"}
                 >
-                  {loading ? (
-                    "Sending magic link..."
-                  ) : (
-                    <>
-                      Sign In with Magic Link <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
+                  Magic Link
                 </button>
-              </form>
+                <button
+                  type="button"
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${mode === "password" ? "bg-[#f4c542] text-[#1e2d42]" : "bg-white/10 text-white"}`}
+                  onClick={switchToLogin}
+                  disabled={mode === "password"}
+                >
+                  Log In
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${mode === "signup" ? "bg-[#f4c542] text-[#1e2d42]" : "bg-white/10 text-white"}`}
+                  onClick={switchToSignup}
+                  disabled={mode === "signup"}
+                >
+                  Sign Up
+                </button>
+              </div>
+
+              {mode === "magic" && (
+                <form onSubmit={handleMagicLogin} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Email address</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {error && (
+                    <p className="text-red-400 text-sm bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || !email.trim()}
+                    className="w-full bg-[#f4c542] text-[#1e2d42] font-bold py-3 rounded-xl hover:bg-[#e0b02f] disabled:opacity-50 transition flex items-center justify-center gap-2 text-sm"
+                  >
+                    {loading ? (
+                      "Sending magic link..."
+                    ) : (
+                      <>
+                        Sign In with Magic Link <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                  <p className="text-center text-xs text-slate-400 mt-2">
+                    Only available for admin accounts
+                  </p>
+                </form>
+              )}
+
+              {mode === "password" && (
+                <form onSubmit={handlePasswordLogin} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Email address</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Your password"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+                  {error && (
+                    <p className="text-red-400 text-sm bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={loading || !email.trim() || !password}
+                    className="w-full bg-[#f4c542] text-[#1e2d42] font-bold py-3 rounded-xl hover:bg-[#e0b02f] disabled:opacity-50 transition flex items-center justify-center gap-2 text-sm"
+                  >
+                    {loading ? (
+                      "Signing in..."
+                    ) : (
+                      <>
+                        Sign In <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                  <p className="text-center text-xs text-slate-400 mt-2">
+                    Don't have an account?{' '}
+                    <button type="button" className="underline text-[#f4c542]" onClick={switchToSignup}>Sign up</button>
+                  </p>
+                </form>
+              )}
+
+              {mode === "signup" && (
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Email address</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Create a password"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+                  {error && (
+                    <p className="text-red-400 text-sm bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={loading || !email.trim() || !password}
+                    className="w-full bg-[#f4c542] text-[#1e2d42] font-bold py-3 rounded-xl hover:bg-[#e0b02f] disabled:opacity-50 transition flex items-center justify-center gap-2 text-sm"
+                  >
+                    {loading ? (
+                      "Signing up..."
+                    ) : (
+                      <>
+                        Sign Up <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                  <p className="text-center text-xs text-slate-400 mt-2">
+                    Already have an account?{' '}
+                    <button type="button" className="underline text-[#f4c542]" onClick={switchToLogin}>Log in</button>
+                  </p>
+                </form>
+              )}
 
               {/* Divider */}
               <div className="flex items-center gap-3 my-5">
@@ -130,9 +326,10 @@ export default function LoginPage() {
                 <div className="flex-1 h-px bg-white/20" />
               </div>
 
+
               {/* Google OAuth */}
               <button
-                onClick={handleGoogleLogin}
+                onClick={() => handleGoogleLogin(mode === "signup")}
                 disabled={googleLoading}
                 className="w-full bg-white text-slate-800 font-semibold py-3 rounded-xl hover:bg-slate-100 disabled:opacity-50 transition flex items-center justify-center gap-3 text-sm"
               >
@@ -142,11 +339,13 @@ export default function LoginPage() {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
-                {googleLoading ? "Redirecting to Google..." : "Continue with Google"}
+                {googleLoading ? (mode === "signup" ? "Signing up with Google..." : "Redirecting to Google...") : (mode === "signup" ? "Sign Up with Google" : "Continue with Google")}
               </button>
 
               <p className="text-center text-xs text-slate-400 mt-4">
-                No password needed — we&apos;ll send a secure link to your email
+                {mode === "signup"
+                  ? "Sign up with email, Google, or (if admin) a magic link."
+                  : "Use your email & password, Google, or (if admin) a magic link"}
               </p>
 
               {/* Features */}

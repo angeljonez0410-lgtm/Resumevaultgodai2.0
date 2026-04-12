@@ -56,7 +56,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const handleSignOut = () => {
     localStorage.removeItem("sb_access_token");
-    router.push("/admin/login");
+    router.push("/login");
   };
 
   return (

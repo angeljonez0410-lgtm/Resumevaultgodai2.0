@@ -9,6 +9,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
+    // Only allow magic link for admin emails
+    const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "angeljonez0410@gmail.com").split(",").map(e => e.trim().toLowerCase());
+    if (!ADMIN_EMAILS.includes(email.toLowerCase())) {
+      return NextResponse.json({ error: "Magic link is only available for admin accounts." }, { status: 403 });
+    }
+
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
