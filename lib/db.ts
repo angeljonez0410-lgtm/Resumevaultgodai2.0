@@ -72,36 +72,6 @@ export async function deleteApplication(id: string, userId: string) {
 export async function listResumes(userId: string) {
   const sb = getSupabaseAdmin();
   const { data } = await sb
-    .from("saved_resumes")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false });
-  return data || [];
-}
-
-export async function createResume(userId: string, fields: Record<string, unknown>) {
-  const sb = getSupabaseAdmin();
-  const { data, error } = await sb
-    .from("saved_resumes")
-    .insert({ user_id: userId, ...fields })
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
-}
-
-export async function deleteResume(id: string, userId: string) {
-  const sb = getSupabaseAdmin();
-  const { error } = await sb
-    .from("saved_resumes")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", userId);
-  if (error) throw error;
-}
-
-// ─── Reviews ───
-export async function listReviews() {
   const sb = getSupabaseAdmin();
   const { data } = await sb
     .from("reviews")

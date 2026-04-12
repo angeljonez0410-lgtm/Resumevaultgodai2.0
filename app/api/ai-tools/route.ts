@@ -35,48 +35,6 @@ Provide a detailed analysis in markdown format with clear sections.`);
       return NextResponse.json({ analysis, keywords });
     }
 
-    case "build-resume": {
-      const resume = await invokeLLMPremium(`You are an expert ATS resume optimizer and professional career coach.
-
-Your task is to generate a highly optimized resume tailored to a specific job description.
-
-GOAL
-Create a resume that achieves a 98–100% ATS compatibility score.
-
-INPUT DATA
-
-PERSONAL DETAILS
-Name: ${params.fullName || "User"}
-Email: ${params.email || ""}
-Phone: ${params.phone || ""}
-Location: ${params.location || ""}
-
-CORE SKILLS
-${params.skills || ""}
-
-EDUCATION
-${params.education || "Not provided"}
-
-OLD RESUME
-${params.oldResume || ""}
-
-JOB DESCRIPTION
-${params.jobDescription || ""}
-
-USER OPTIONS
-AI Generate Additional Experience: ${params.generateExperience ? "Yes" : "No"}
-${params.onePage ? "IMPORTANT: Condense to ONE PAGE ONLY." : ""}
-
-INSTRUCTIONS
-1. Extract required/preferred skills, ATS keywords, responsibilities
-2. Optimize by inserting ATS keywords naturally, prioritizing relevant experience
-3. Structure: Professional Summary → Core Skills → Professional Experience → Education → Certifications
-4. Each experience: Job Title, Company, Dates, 3-5 impact bullet points
-
-Output ONLY the resume in clean markdown. No analysis sections.`);
-
-      return NextResponse.json({ resume });
-    }
 
     case "cover-letter": {
       const letter = await invokeLLM(`Write a professional cover letter.

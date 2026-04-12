@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ResumeVault GodAI - Beat the ATS in 60 Seconds",
-  description: "AI-powered resume builder, job analyzer, cover letter generator, and interview coach. God-Mode your job hunt.",
+  title: "Social Bot Dashboard",
+  description: "Manage and automate your social media accounts with the original social bot.",
 };
 
 export default function RootLayout({
