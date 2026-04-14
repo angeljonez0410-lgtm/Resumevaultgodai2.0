@@ -36,4 +36,9 @@ dist-ssr
 
 # Legacy Base44/Vite build artifacts / local tooling
 .deploy-vibe-clip-lab/
+base44/
+deploy-vibe-clip-lab/
 deploy-vibe-clip-lab/.vercel/
+index.html
+vite.config.js
+vite-src/
