@@ -110,12 +110,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <Sparkles className="w-5 h-5" style={{ color: "#1e2d42" }} />
               </div>
               <div>
-                <h1 className="font-bold text-white text-lg leading-tight">Resumevault</h1>
+                <h1 className="font-bold text-white text-lg leading-tight">Social Bot</h1>
                 <p
                   className="text-[10px] uppercase tracking-[0.2em] font-medium"
-                  style={{ color: "#f4c542" }}
+                  style={{ color: "#3b82f6" }}
                 >
-                  God-Mode Job Hunt
+                  AI Social Automation
                 </p>
               </div>
             </Link>
@@ -128,7 +128,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="mt-4 pt-4 border-t border-[#2a3f5f]">
             <p className="text-xs text-white/80 italic leading-relaxed">
-              <span style={{ color: "#f4c542" }}>⚡</span> ResumevaultGodAI — Beat the ATS in 60 seconds &amp; God-Mode your job hunt.
+              <span style={{ color: "#3b82f6" }}>⚡</span> Social Bot — AI-powered social media automation.
             </p>
           </div>
         </div>
@@ -229,7 +229,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           >
             <p className="text-xs font-semibold mb-1" style={{ color: "#f4c542" }}>AI-Powered</p>
             <p className="text-[11px] text-white/70 leading-relaxed">
-              Get tailored resumes, cover letters, and more.
+              Manage, schedule, and analyze your social media with AI.
             </p>
           </div>
           <button
@@ -258,10 +258,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </button>
           )}
           <Link href="/app" className="flex items-center gap-2 ml-auto">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#f4c542" }}>
-              <Sparkles className="w-3.5 h-3.5" style={{ color: "#1e2d42" }} />
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#3b82f6" }}>
+              <Sparkles className="w-3.5 h-3.5" style={{ color: "#fff" }} />
             </div>
-            <span className="font-bold text-white text-sm">Resumevault</span>
+            <span className="font-bold text-white text-sm">Social Bot</span>
           </Link>
         </header>
 

@@ -1,55 +1,39 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+#env
+.env
+.env.*
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Logs
+/logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+node_modules
+dist
+dist-ssr
+*.local
 
-# vercel
-.vercel
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# typescript
-*.tsbuildinfo
+.env
+# Next.js
+.next/
 
-# conflicting v3 configs (using v4 via postcss.config.mjs)
-postcss.config.js
-tailwind.config.js
-jsconfig.json
-next-env.d.ts
+# Vercel
+.vercel/
 
-# Base44 leftover eslint config (using eslint.config.mjs)
-eslint.config.js
-
-# Base44 leftover files
-index.html
-vite.config.js
-components.json
-jsconfig.json
+# Legacy Base44/Vite build artifacts / local tooling
+.deploy-vibe-clip-lab/
+deploy-vibe-clip-lab/.vercel/

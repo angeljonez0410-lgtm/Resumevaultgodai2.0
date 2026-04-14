@@ -68,10 +68,9 @@ export async function deleteApplication(id: string, userId: string) {
   if (error) throw error;
 }
 
-// ─── Saved Resumes ───
-export async function listResumes(userId: string) {
-  const sb = getSupabaseAdmin();
-  const { data } = await sb
+
+// ─── Reviews ───
+export async function listReviews() {
   const sb = getSupabaseAdmin();
   const { data } = await sb
     .from("reviews")

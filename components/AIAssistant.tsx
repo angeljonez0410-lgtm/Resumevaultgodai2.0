@@ -9,11 +9,11 @@ type Message = {
   content: string;
 };
 
-export default function AIAssistant() {
+export default function AIAssistant({ defaultOpen = false }: { defaultOpen?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [greeted, setGreeted] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 

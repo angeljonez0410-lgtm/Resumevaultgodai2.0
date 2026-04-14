@@ -16,7 +16,7 @@ const creditPacks: Array<{
 ];
 
 const usageExamples = [
-  { icon: FileText, name: "AI Resume Generation", cost: "2 credits", desc: "ATS-optimized resume tailored to any job" },
+  { icon: FileText, name: "AI Post Generation", cost: "2 credits", desc: "AI-generated social media post for any platform" },
   { icon: Mic, name: "Mock Interview Session", cost: "3 credits", desc: "Full AI interview with feedback" },
   { icon: Send, name: "Auto-Apply (per app)", cost: "1 credit", desc: "Automated job application submission" },
   { icon: FileText, name: "Cover Letter", cost: "1 credit", desc: "Personalized cover letter generation" },
@@ -25,7 +25,7 @@ const usageExamples = [
 ];
 
 const testimonials = [
-  { name: "Sarah K.", role: "Product Manager", text: "Got 3 interviews in my first week using the Resume Builder. The ATS optimization is incredible.", stars: 5 },
+  { name: "Sarah K.", role: "Product Manager", text: "Grew my followers in my first week using the Social Bot. The AI post generation is incredible.", stars: 5 },
   { name: "Marcus J.", role: "Software Engineer", text: "The Mock Interview feature helped me ace my Google interview. Worth every penny.", stars: 5 },
   { name: "Lisa T.", role: "Marketing Director", text: "Auto Apply saved me 20+ hours a week. I landed my dream job in 3 weeks.", stars: 5 },
 ];
@@ -82,14 +82,14 @@ function PricingContent() {
         </div>
         <h1 className="text-3xl font-bold text-slate-800 mb-2">Buy Credits</h1>
         <p className="text-slate-500 max-w-lg mx-auto">
-          Purchase credits and use them across all AI tools — resumes, interviews, applications, and more.
+          Purchase credits and use them across all AI tools — posts, analytics, scheduling, and more.
         </p>
       </div>
 
       {/* Stats bar */}
       <div className="flex justify-center gap-8 mb-12 text-center">
         {[
-          { value: "10,000+", label: "Resumes Generated" },
+          { value: "10,000+", label: "Posts Generated" },
           { value: "98%", label: "Avg ATS Score" },
           { value: "4.9/5", label: "User Rating" },
         ].map((s) => (

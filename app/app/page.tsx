@@ -9,10 +9,10 @@ import {
 } from "lucide-react";
 
 const quickActions = [
-  { title: "Analyze Job", desc: "Extract ATS keywords from a job posting", icon: Search, page: "/app/job-analyzer", color: "from-blue-500 to-blue-600" },
-  { title: "Build Resume", desc: "Generate a tailored resume", icon: FileText, page: "/app/resume-builder", color: "from-emerald-500 to-emerald-600" },
-  { title: "Cover Letter", desc: "Write a compelling cover letter", icon: Mail, page: "/app/cover-letter", color: "from-purple-500 to-purple-600" },
-  { title: "Follow-Up", desc: "Craft a professional follow-up email", icon: Send, page: "/app/follow-up-email", color: "from-amber-500 to-orange-600" },
+  { title: "Schedule Post", desc: "Plan and schedule your next social post", icon: FileText, page: "/app/social-bot/posts", color: "from-blue-500 to-blue-600" },
+  { title: "Analytics", desc: "Track your social growth and engagement", icon: TrendingUp, page: "/app/analytics", color: "from-green-500 to-green-600" },
+  { title: "Connect Accounts", desc: "Link your social media profiles", icon: Star, page: "/app/social-bot/accounts", color: "from-purple-500 to-purple-600" },
+  { title: "AI Post Builder", desc: "Generate a viral post with AI", icon: Zap, page: "/app/social-bot", color: "from-amber-500 to-orange-600" },
 ];
 
 const premiumActions = [
@@ -32,16 +32,20 @@ const statusColors: Record<string, string> = {
 };
 
 const quotes = [
-  "Your resume is the key — let AI sharpen it to perfection.",
-  "Every application is a step closer. Keep going.",
-  "ATS can't stop a God-Mode resume.",
-  "The best time to apply was yesterday. The next best is now.",
-  "Career success is built one tailored resume at a time.",
+  "Your social presence is the key — let AI boost it to perfection.",
+  "Every post is a step closer. Keep going.",
+  "AI can't stop a God-Mode social strategy.",
+  "The best time to post was yesterday. The next best is now.",
+  "Success is built one great post at a time.",
 ];
 
 export default function DashboardPage() {
   const [applications, setApplications] = useState<Record<string, string | number>[]>([]);
-  const [quote] = useState(() => quotes[Math.floor(Math.random() * quotes.length)]);
+  const [quote, setQuote] = useState<string | null>(null);
+
+  useEffect(() => {
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -116,9 +120,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Motivational Quote */}
-      <div className="mb-8 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100 text-center">
-        <p className="text-sm text-amber-800 italic">&ldquo;{quote}&rdquo;</p>
-      </div>
+      {quote && (
+        <div className="mb-8 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100 text-center">
+          <p className="text-sm text-amber-800 italic">&ldquo;{quote}&rdquo;</p>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="mb-10">
