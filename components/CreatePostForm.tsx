@@ -23,6 +23,10 @@ export default function CreatePostForm({
   const [loadingPhotoPrompt, setLoadingPhotoPrompt] = useState(false);
   const [loadingVideoPrompt, setLoadingVideoPrompt] = useState(false);
 
+  function getErrorMessage(error: string | undefined, fallback: string) {
+    return error === "Unauthorized" ? "Please log in again, then try this button." : error || fallback;
+  }
+
   async function generateCaption() {
     if (!topic) {
       setMessage("Enter a topic first");
@@ -32,25 +36,29 @@ export default function CreatePostForm({
     setLoadingCaption(true);
     setMessage("");
 
-    const res = await authFetch("/api/generate-caption", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ topic, platform }),
-    });
+    try {
+      const res = await authFetch("/api/generate-caption", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ topic, platform }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      setMessage(data.error || "Failed to generate caption");
+      if (!res.ok) {
+        setMessage(getErrorMessage(data.error, "Failed to generate caption"));
+        return;
+      }
+
+      setCaption(data.caption || "");
+      setMessage("Caption generated");
+    } catch {
+      setMessage("Could not connect to caption generator");
+    } finally {
       setLoadingCaption(false);
-      return;
     }
-
-    setCaption(data.caption || "");
-    setMessage("Caption generated");
-    setLoadingCaption(false);
   }
 
   async function generateImage() {
@@ -62,28 +70,32 @@ export default function CreatePostForm({
     setLoadingImage(true);
     setMessage("");
 
-    const res = await authFetch("/api/generate-image", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: `Premium social media visual for ResumeVaultGod.com about: ${topic}. Show career growth, AI-powered resume building, job search confidence, and a modern product feel.`,
-        characterDescription: "ResumeVaultGod.com is an AI-powered career platform for resume building, job applications, interview preparation, and social proof for job seekers.",
-      }),
-    });
+    try {
+      const res = await authFetch("/api/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: `Premium social media visual for ResumeVaultGod.com about: ${topic}. Show career growth, AI-powered resume building, job search confidence, and a modern product feel.`,
+          characterDescription: "ResumeVaultGod.com is an AI-powered career platform for resume building, job applications, interview preparation, and social proof for job seekers.",
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      setMessage(data.error || "Failed to generate image");
+      if (!res.ok) {
+        setMessage(getErrorMessage(data.error, "Failed to generate image"));
+        return;
+      }
+
+      setImageUrl(data.imageUrl || "");
+      setMessage("Image generated");
+    } catch {
+      setMessage("Could not connect to image generator");
+    } finally {
       setLoadingImage(false);
-      return;
     }
-
-    setImageUrl(data.imageUrl || "");
-    setMessage("Image generated");
-    setLoadingImage(false);
   }
 
   async function generateRealPhotoPrompt() {
@@ -95,28 +107,32 @@ export default function CreatePostForm({
     setLoadingPhotoPrompt(true);
     setMessage("");
 
-    const res = await authFetch("/api/generate-real-photo-prompt", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        topic,
-        visualStyle,
-      }),
-    });
+    try {
+      const res = await authFetch("/api/generate-real-photo-prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          topic,
+          visualStyle,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      setMessage(data.error || "Failed to generate photo prompt");
+      if (!res.ok) {
+        setMessage(getErrorMessage(data.error, "Failed to generate photo prompt"));
+        return;
+      }
+
+      setVisualPrompt(data.prompt || "");
+      setMessage("Realistic photo prompt generated");
+    } catch {
+      setMessage("Could not connect to photo prompt generator");
+    } finally {
       setLoadingPhotoPrompt(false);
-      return;
     }
-
-    setVisualPrompt(data.prompt || "");
-    setMessage("Realistic photo prompt generated");
-    setLoadingPhotoPrompt(false);
   }
 
   async function generateVideoPrompt() {
@@ -128,28 +144,32 @@ export default function CreatePostForm({
     setLoadingVideoPrompt(true);
     setMessage("");
 
-    const res = await authFetch("/api/generate-video-prompt", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        topic,
-        visualStyle,
-      }),
-    });
+    try {
+      const res = await authFetch("/api/generate-video-prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          topic,
+          visualStyle,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      setMessage(data.error || "Failed to generate video prompt");
+      if (!res.ok) {
+        setMessage(getErrorMessage(data.error, "Failed to generate video prompt"));
+        return;
+      }
+
+      setVideoPrompt(data.prompt || "");
+      setMessage("Realistic video prompt generated");
+    } catch {
+      setMessage("Could not connect to video prompt generator");
+    } finally {
       setLoadingVideoPrompt(false);
-      return;
     }
-
-    setVideoPrompt(data.prompt || "");
-    setMessage("Realistic video prompt generated");
-    setLoadingVideoPrompt(false);
   }
 
   async function handleSubmit() {
@@ -176,7 +196,7 @@ export default function CreatePostForm({
     const data = await res.json();
 
     if (!res.ok) {
-      setMessage(data.error || "Failed to create post");
+      setMessage(getErrorMessage(data.error, "Failed to create post"));
       return;
     }
 

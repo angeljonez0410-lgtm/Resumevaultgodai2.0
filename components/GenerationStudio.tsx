@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileText, Image as ImageIcon, Loader2, Play, Sparkles, Video, Wand2 } from "lucide-react";
 import { authFetch } from "@/lib/auth-fetch";
 
@@ -26,6 +26,8 @@ function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const STORAGE_KEY = "influencerai_generated_assets";
+
 export default function GenerationStudio({ defaultMode = "image" }: { defaultMode?: "image" | "video" | "prompt" }) {
   const [mode, setMode] = useState<"image" | "video" | "prompt">(defaultMode);
   const [prompt, setPrompt] = useState("");
@@ -37,6 +39,31 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
   const [images, setImages] = useState<GeneratedImage[]>([]);
   const [videos, setVideos] = useState<GeneratedVideo[]>([]);
   const [prompts, setPrompts] = useState<GeneratedPrompt[]>([]);
+  const [loadedSavedAssets, setLoadedSavedAssets] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as {
+          images?: GeneratedImage[];
+          videos?: GeneratedVideo[];
+          prompts?: GeneratedPrompt[];
+        };
+        setImages(parsed.images || []);
+        setVideos(parsed.videos || []);
+        setPrompts(parsed.prompts || []);
+      } catch {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+    setLoadedSavedAssets(true);
+  }, []);
+
+  useEffect(() => {
+    if (!loadedSavedAssets) return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ images, videos, prompts }));
+  }, [images, loadedSavedAssets, prompts, videos]);
 
   const generateImage = async () => {
     const res = await authFetch("/api/generate-image", {
@@ -45,7 +72,9 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
       body: JSON.stringify({ prompt, characterDescription }),
     });
     const data = await res.json();
-    if (!res.ok || !data.imageUrl) throw new Error(data.error || "Image generation failed");
+    if (!res.ok || !data.imageUrl) {
+      throw new Error(data.error === "Unauthorized" ? "Please log in again, then generate your image." : data.error || "Image generation failed");
+    }
     setImages((current) => [{ id: Date.now(), url: data.imageUrl, prompt }, ...current]);
   };
 
@@ -56,7 +85,9 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
       body: JSON.stringify({ prompt, characterDescription, duration }),
     });
     const data = await res.json();
-    if (!res.ok || !data.predictionId) throw new Error(data.error || "Video generation failed");
+    if (!res.ok || !data.predictionId) {
+      throw new Error(data.error === "Unauthorized" ? "Please log in again, then generate your video." : data.error || "Video generation failed");
+    }
 
     if (data.videoUrl) {
       setVideos((current) => [{ id: Date.now(), url: data.videoUrl, prompt }, ...current]);
@@ -69,7 +100,9 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
 
       const pollRes = await authFetch(`/api/generate-video?id=${data.predictionId}`);
       const pollData = await pollRes.json();
-      if (!pollRes.ok) throw new Error(pollData.error || "Video status check failed");
+      if (!pollRes.ok) {
+        throw new Error(pollData.error === "Unauthorized" ? "Please log in again, then check your video." : pollData.error || "Video status check failed");
+      }
       if (pollData.status === "failed") throw new Error(pollData.error || "Video generation failed");
       if (pollData.videoUrl) {
         setVideos((current) => [{ id: Date.now(), url: pollData.videoUrl, prompt }, ...current]);
@@ -87,7 +120,9 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
       body: JSON.stringify({ topic: prompt, mode: "image", characterDescription }),
     });
     const data = await res.json();
-    if (!res.ok || !data.prompt) throw new Error(data.error || "Prompt generation failed");
+    if (!res.ok || !data.prompt) {
+      throw new Error(data.error === "Unauthorized" ? "Please log in again, then generate your prompt." : data.error || "Prompt generation failed");
+    }
     setPrompts((current) => [{ id: Date.now(), prompt: data.prompt, topic: prompt }, ...current]);
   };
 

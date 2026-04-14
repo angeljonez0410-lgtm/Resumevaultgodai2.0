@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
 import {
   Bot,
   ChevronLeft,
@@ -41,7 +42,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const sidebarWidth = collapsed ? "lg:w-[72px]" : "lg:w-64";
   const isActive = (path: string) => (path === "/app" ? pathname === "/app" : pathname.startsWith(path));
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await getSupabaseBrowser().auth.signOut();
     localStorage.removeItem("sb_access_token");
     localStorage.removeItem("sb_refresh_token");
     localStorage.removeItem("sb_user");

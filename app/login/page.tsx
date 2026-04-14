@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sparkles, Mail, ArrowRight, Shield, Zap, Star, Lock } from "lucide-react";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
+import { storeClientSession } from "@/lib/auth-fetch";
 
 
 export default function LoginPage() {
@@ -56,13 +57,14 @@ export default function LoginPage() {
     setError("");
     try {
       const supabase = getSupabaseBrowser();
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (signInError) {
         setError(signInError.message);
       } else {
+        storeClientSession(data.session);
         window.location.href = "/app";
       }
     } catch {
@@ -80,13 +82,16 @@ export default function LoginPage() {
     setError("");
     try {
       const supabase = getSupabaseBrowser();
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
       });
       if (signUpError) {
         setError(signUpError.message);
+      } else if (data.session) {
+        storeClientSession(data.session);
+        window.location.href = "/app";
       } else {
         setSent(true);
       }
