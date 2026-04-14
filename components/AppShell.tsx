@@ -23,13 +23,13 @@ import {
 
 const navItems = [
   { path: "/app", label: "Dashboard", icon: LayoutDashboard },
-  { path: "/app/profile", label: "Characters", icon: Users },
-  { path: "/app/social-bot", label: "Create Video", icon: Video },
-  { path: "/app/social-bot", label: "Quick Generate", icon: Wand2 },
-  { path: "/app/social-bot/posts", label: "Social Media", icon: Share2 },
-  { path: "/app/application-tracker", label: "Projects", icon: FolderOpen },
+  { path: "/app/characters", label: "Characters", icon: Users },
+  { path: "/app/create-video", label: "Create Video", icon: Video },
+  { path: "/app/quick-generate", label: "Quick Generate", icon: Wand2 },
+  { path: "/app/social-media", label: "Social Media", icon: Share2 },
+  { path: "/app/projects", label: "Projects", icon: FolderOpen },
   { path: "/AIAssistant", label: "ARIA AI", icon: Bot },
-  { path: "/app/social-bot/settings", label: "Settings", icon: Settings },
+  { path: "/app/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {

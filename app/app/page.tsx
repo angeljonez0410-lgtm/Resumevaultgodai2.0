@@ -15,21 +15,21 @@ const actions = [
     label: "New Character",
     description: "Create a master character",
     icon: Users,
-    path: "/app/profile",
+    path: "/app/characters",
     gradient: "from-violet-500 to-purple-600",
   },
   {
     label: "Create Video",
     description: "Generate a new video",
     icon: Video,
-    path: "/app/social-bot",
+    path: "/app/create-video",
     gradient: "from-fuchsia-500 to-pink-600",
   },
   {
     label: "Quick Generate",
     description: "Use a scene template",
     icon: Wand2,
-    path: "/app/social-bot",
+    path: "/app/quick-generate",
     gradient: "from-cyan-500 to-blue-600",
   },
 ];
@@ -94,7 +94,7 @@ export default function DashboardPage() {
           <p className="text-sm text-slate-400">No projects yet</p>
           <p className="mt-1 text-xs text-slate-500">Create your first video to get started</p>
           <Link
-            href="/app/social-bot"
+            href="/app/create-video"
             className="mt-5 inline-flex items-center gap-2 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-semibold text-violet-300 transition hover:bg-violet-500/15"
           >
             <FolderOpen className="h-4 w-4" />
