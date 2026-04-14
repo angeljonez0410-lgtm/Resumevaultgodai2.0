@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Image as ImageIcon, Loader2, Play, Sparkles, Video, Wand2 } from "lucide-react";
+import { FileText, Image as ImageIcon, Loader2, Play, Sparkles, Video, Wand2 } from "lucide-react";
 import { authFetch } from "@/lib/auth-fetch";
 
 type GeneratedImage = {
@@ -16,12 +16,18 @@ type GeneratedVideo = {
   prompt: string;
 };
 
+type GeneratedPrompt = {
+  id: number;
+  prompt: string;
+  topic: string;
+};
+
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export default function GenerationStudio({ defaultMode = "image" }: { defaultMode?: "image" | "video" }) {
-  const [mode, setMode] = useState<"image" | "video">(defaultMode);
+export default function GenerationStudio({ defaultMode = "image" }: { defaultMode?: "image" | "video" | "prompt" }) {
+  const [mode, setMode] = useState<"image" | "video" | "prompt">(defaultMode);
   const [prompt, setPrompt] = useState("");
   const [characterDescription, setCharacterDescription] = useState("");
   const [duration, setDuration] = useState("10s");
@@ -30,6 +36,7 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
   const [generating, setGenerating] = useState(false);
   const [images, setImages] = useState<GeneratedImage[]>([]);
   const [videos, setVideos] = useState<GeneratedVideo[]>([]);
+  const [prompts, setPrompts] = useState<GeneratedPrompt[]>([]);
 
   const generateImage = async () => {
     const res = await authFetch("/api/generate-image", {
@@ -73,18 +80,32 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
     throw new Error("Video generation is still running. Try again in a moment.");
   };
 
+  const generatePrompt = async () => {
+    const res = await authFetch("/api/generate-prompt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic: prompt, mode: "image", characterDescription }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.prompt) throw new Error(data.error || "Prompt generation failed");
+    setPrompts((current) => [{ id: Date.now(), prompt: data.prompt, topic: prompt }, ...current]);
+  };
+
   const handleGenerate = async () => {
     if (!prompt.trim() || generating) return;
 
     setGenerating(true);
     setError("");
-    setStatusText(mode === "image" ? "Creating image..." : "Starting video render...");
+    setStatusText(
+      mode === "image" ? "Creating image..." : mode === "video" ? "Starting video render..." : "Writing prompt pack..."
+    );
 
     try {
       if (mode === "image") await generateImage();
-      else await generateVideo();
+      else if (mode === "video") await generateVideo();
+      else await generatePrompt();
       setPrompt("");
-      setStatusText(mode === "image" ? "Image generated." : "Video generated.");
+      setStatusText(mode === "image" ? "Image generated." : mode === "video" ? "Video generated." : "Prompt generated.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Generation failed");
       setStatusText("");
@@ -113,6 +134,14 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
           >
             <Video className="h-4 w-4" /> Videos
           </button>
+          <button
+            onClick={() => setMode("prompt")}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition ${
+              mode === "prompt" ? "bg-violet-500/20 text-violet-300" : "bg-white/5 text-slate-400 hover:text-white"
+            }`}
+          >
+            <FileText className="h-4 w-4" /> Prompts
+          </button>
         </div>
 
         <div className="grid gap-3 lg:grid-cols-[1fr_220px]">
@@ -125,7 +154,9 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
             placeholder={
               mode === "image"
                 ? "e.g. wearing a red dress on a beach at sunset..."
-                : "e.g. walking down a city street, waving at camera..."
+                : mode === "video"
+                  ? "e.g. walking down a city street, waving at camera..."
+                  : "e.g. luxury fitness creator launch campaign..."
             }
             className="min-h-12 rounded-xl border border-white/10 bg-slate-900 px-4 text-sm text-white outline-none placeholder:text-slate-600 focus:border-violet-500/50"
           />
@@ -156,7 +187,7 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
             className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2 text-sm font-semibold text-white transition hover:from-violet-500 hover:to-fuchsia-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-            {generating ? "Generating..." : `Generate ${mode === "image" ? "Image" : "Video"}`}
+            {generating ? "Generating..." : `Generate ${mode === "image" ? "Image" : mode === "video" ? "Video" : "Prompt"}`}
           </button>
           {statusText ? <p className="text-xs text-slate-400">{statusText}</p> : null}
           {error ? <p className="text-xs text-red-300">{error}</p> : null}
@@ -202,7 +233,27 @@ export default function GenerationStudio({ defaultMode = "image" }: { defaultMod
         </section>
       ) : null}
 
-      {images.length === 0 && videos.length === 0 ? (
+      {prompts.length > 0 ? (
+        <section>
+          <h2 className="mb-4 text-lg font-semibold text-white">Generated Prompts</h2>
+          <div className="space-y-4">
+            {prompts.map((item) => (
+              <article key={item.id} className="rounded-2xl border border-white/5 bg-slate-900/50 p-5">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-violet-300">{item.topic}</p>
+                <pre className="whitespace-pre-wrap text-sm leading-6 text-slate-200">{item.prompt}</pre>
+                <button
+                  onClick={() => navigator.clipboard.writeText(item.prompt)}
+                  className="mt-4 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-xs font-semibold text-violet-200 transition hover:bg-violet-500/15"
+                >
+                  Copy prompt
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {images.length === 0 && videos.length === 0 && prompts.length === 0 ? (
         <section className="rounded-2xl border border-white/5 bg-slate-900/40 p-8 text-center">
           <Sparkles className="mx-auto mb-3 h-10 w-10 text-slate-600" />
           <p className="text-sm text-slate-400">Generated assets will appear here.</p>
