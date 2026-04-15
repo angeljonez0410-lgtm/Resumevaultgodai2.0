@@ -1,0 +1,4 @@
+[submodule "resumevaultgodai"]
+	path = resumevaultgodai
+	url = https://github.com/angeljonez0410-lgtm/resumevaultgodai.git
+	branch = test
