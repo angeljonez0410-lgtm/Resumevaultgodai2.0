@@ -119,7 +119,7 @@ export default function LoginPage() {
           <div className="w-8 h-8 rounded-lg bg-[#f4c542] flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-[#1e2d42]" />
           </div>
-          <span className="text-white font-bold text-lg">Social Bot</span>
+          <span className="text-white font-bold text-lg">InfluencerAI Studio</span>
         </Link>
       </nav>
 
@@ -133,7 +133,7 @@ export default function LoginPage() {
                 <div className="w-16 h-16 rounded-2xl bg-[#f4c542] flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-8 h-8 text-[#1e2d42]" />
                 </div>
-                <h1 className="text-2xl font-bold text-white mb-2">Welcome to Social Bot</h1>
+                <h1 className="text-2xl font-bold text-white mb-2">Welcome to InfluencerAI Studio</h1>
                 <p className="text-slate-300 text-sm">Sign in or sign up to manage content, scheduling, and social channels.</p>
               </div>
 

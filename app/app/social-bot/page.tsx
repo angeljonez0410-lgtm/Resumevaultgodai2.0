@@ -75,11 +75,11 @@ export default function SocialBotPage() {
   return (
     <main className="space-y-6 p-5 sm:p-6 lg:p-8">
       <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-700">Social Bot Pro</p>
-        <h1 className="mt-2 text-3xl font-semibold text-slate-900">Professional Content Operations Center</h1>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-700">InfluencerAI Studio</p>
+        <h1 className="mt-2 text-3xl font-semibold text-slate-900">Professional AI Creator Operations Center</h1>
         <p className="mt-2 max-w-3xl text-sm text-slate-600">
-          Manage brand voice, AI character systems, campaign planning, generation workflows, and multi-platform publishing
-          from one production-ready dashboard.
+          Run strategy, AI character systems, content production, and multi-platform publishing in one unified studio
+          modeled after your previous InfluencerAI workflow.
         </p>
       </section>
 

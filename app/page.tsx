@@ -1,73 +1,75 @@
 import Link from "next/link";
-import { Sparkles, Zap, FileText, Search, Mail, Star, ArrowRight } from "lucide-react";
+import { Sparkles, Zap, Wand2, Users, CalendarClock, ArrowRight } from "lucide-react";
+
+const features = [
+  {
+    title: "Character Training",
+    description: "Create reusable AI characters with their own voice, prompt brain, and visual reference profile.",
+    icon: Users,
+  },
+  {
+    title: "Prompt-to-Post",
+    description: "Generate topic, caption, deep-dive, hashtags, and visual prompts in a single production workflow.",
+    icon: Wand2,
+  },
+  {
+    title: "Publishing Ops",
+    description: "Connect platforms, schedule campaigns, and monitor operations with live activity tracking.",
+    icon: CalendarClock,
+  },
+];
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#1e2d42] to-[#0f1a2a]">
-      {/* Hero */}
-      <div className="max-w-5xl mx-auto px-6 pt-16 pb-12">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 bg-blue-400/20 text-blue-300 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
-            <Zap className="w-4 h-4" /> Social Bot Platform
+    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+      <div className="mx-auto max-w-6xl px-6 py-16 lg:py-24">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl lg:p-12">
+          <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/15 px-4 py-1.5 text-sm font-semibold text-cyan-200">
+            <Zap className="h-4 w-4" /> InfluencerAI Studio
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
-            Automate Your Social Media<br />
-            <span style={{ color: "#3b82f6" }}>with Ease</span>
+
+          <h1 className="mt-6 text-4xl font-bold tracking-tight text-white lg:text-6xl">
+            Professional AI Creator Studio
+            <span className="block bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">
+              for Content + Social Ops
+            </span>
           </h1>
-          <p className="text-lg text-white/70 max-w-2xl mx-auto mb-8">
-            Social media automation and analytics for your accounts — manage, schedule, and analyze posts with the original social bot.
+
+          <p className="mt-5 max-w-3xl text-base text-slate-300 lg:text-lg">
+            This app now follows the same style and workflow direction as your previous InfluencerAI build:
+            clean control surfaces, in-depth content ops, social account management, and custom AI character creation.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-8 py-3.5 rounded-xl text-lg flex items-center gap-2 transition shadow-lg">
-              <Sparkles className="w-5 h-5" /> Get Started Free
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 text-sm font-bold text-slate-950 hover:bg-cyan-400"
+            >
+              <Sparkles className="h-4 w-4" /> Open Studio
             </Link>
-            <Link href="/app" className="text-white/80 hover:text-white font-medium flex items-center gap-1 transition">
-              Go to Dashboard <ArrowRight className="w-4 h-4" />
+            <Link
+              href="/app/social-bot"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            >
+              View Dashboard <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="flex justify-center gap-12 mt-16 mb-16">
-          {[
-            { value: "1,000+", label: "Accounts Managed" },
-            { value: "5M+", label: "Posts Scheduled" },
-            { value: "4.9/5", label: "User Rating" },
-          ].map((s) => (
-            <div key={s.label} className="text-center">
-              <p className="text-2xl font-bold" style={{ color: "#3b82f6" }}>{s.value}</p>
-              <p className="text-xs text-white/50 mt-0.5">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Features */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { icon: Search, title: "Account Analytics", desc: "Track growth and engagement" },
-            { icon: FileText, title: "Post Scheduler", desc: "Automate and schedule your posts" },
-            { icon: Mail, title: "Inbox Manager", desc: "Centralize and manage DMs" },
-            { icon: Star, title: "Performance Insights", desc: "AI-powered analytics and tips" },
-          ].map((f) => {
-            const Icon = f.icon;
+        <section className="mt-10 grid gap-4 lg:grid-cols-3">
+          {features.map((feature) => {
+            const Icon = feature.icon;
             return (
-              <div key={f.title} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
-                <div className="w-10 h-10 rounded-xl bg-blue-400/20 flex items-center justify-center mb-3">
-                  <Icon className="w-5 h-5 text-blue-400" />
+              <article key={feature.title} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-300">
+                  <Icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-white font-semibold mb-1">{f.title}</h3>
-                <p className="text-white/50 text-sm">{f.desc}</p>
-              </div>
+                <h2 className="mt-4 text-lg font-semibold text-white">{feature.title}</h2>
+                <p className="mt-2 text-sm text-slate-300">{feature.description}</p>
+              </article>
             );
           })}
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-16 pb-8">
-          <p className="text-white/30 text-xs">
-            © 2025 Social Bot. All rights reserved.
-          </p>
-        </div>
+        </section>
       </div>
     </main>
   );

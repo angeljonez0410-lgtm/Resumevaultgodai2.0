@@ -36,7 +36,7 @@ You are a premium video ad creative strategist.
 
 Generate one photorealistic short-form vertical video prompt for a standalone brand.
 
-Brand: Social Bot
+Brand: InfluencerAI Studio
 Topic: ${topic}
 Visual style preset: ${visualStyle || "Premium SaaS Ad"}
 Brand voice: ${brandVoice}

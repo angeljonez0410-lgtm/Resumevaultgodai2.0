@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Social Bot Dashboard",
-  description: "Manage and automate your social media accounts with the original social bot.",
+  title: "InfluencerAI Studio",
+  description: "Professional AI creator and social media operations studio.",
 };
 
 export default function RootLayout({

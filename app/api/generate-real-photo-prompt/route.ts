@@ -36,7 +36,7 @@ You are a world-class creative director for premium SaaS ad campaigns.
 
 Generate one ultra-realistic AI image prompt for a standalone brand.
 
-Brand: Social Bot
+Brand: InfluencerAI Studio
 Topic: ${topic}
 Visual style preset: ${visualStyle || "Premium SaaS Ad"}
 Brand voice: ${brandVoice}
