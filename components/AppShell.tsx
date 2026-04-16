@@ -42,7 +42,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [authChecking, setAuthChecking] = useState(true);
   const [user, setUser] = useState<UserState | null>(null);
 
-  const sidebarWidth = collapsed ? "lg:w-[76px]" : "lg:w-72";
+  const sidebarWidth = collapsed ? "lg:w-[78px]" : "lg:w-[286px]";
   const isActive = (path: string) => (path === "/app" ? pathname === "/app" : pathname.startsWith(path));
 
   useEffect(() => {
@@ -148,17 +148,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col border-r border-cyan-500/10 bg-[#0b1220]/95 transition-all duration-300 ${sidebarWidth} ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-[286px] flex-col border-r border-cyan-500/10 bg-[#0b1220]/95 transition-all duration-300 ${sidebarWidth} ${
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="flex h-16 items-center border-b border-cyan-500/10 px-5">
+        <div className="flex h-16 items-center border-b border-cyan-500/10 px-4">
           <Link href="/app/social-bot" className="flex min-w-0 items-center gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-cyan-500 to-blue-600">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             {!collapsed ? (
-              <span className="truncate text-lg font-semibold tracking-tight text-white">InfluencerAI Studio</span>
+              <span className="truncate text-[17px] font-semibold tracking-tight text-white">InfluencerAI Studio</span>
             ) : null}
           </Link>
           <button className="ml-auto rounded-lg p-1 text-slate-400 lg:hidden" onClick={() => setMobileOpen(false)}>
@@ -168,7 +168,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="border-b border-cyan-500/10 px-4 py-3">
           {!collapsed ? (
-            <p className="truncate rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-xs text-slate-300">
+            <p className="truncate rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-[11px] text-slate-300">
               {userDisplay}
             </p>
           ) : null}
@@ -184,7 +184,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 href={item.path}
                 onClick={() => setMobileOpen(false)}
                 title={collapsed ? item.label : undefined}
-                className={`group relative flex min-h-10 items-center gap-3 rounded-lg px-3.5 py-2.5 transition-all duration-200 ${
+                className={`group relative flex min-h-10 items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 ${
                   active
                     ? "bg-cyan-500/15 text-cyan-300 shadow-[0_0_0_1px_rgba(34,211,238,0.25)]"
                     : "text-slate-400 hover:bg-white/5 hover:text-white"
@@ -192,7 +192,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               >
                 {active ? <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-cyan-500" /> : null}
                 <Icon className={`h-5 w-5 shrink-0 ${active ? "text-cyan-300" : ""}`} />
-                {!collapsed ? <span className="min-w-0 truncate text-sm font-medium">{item.label}</span> : null}
+                {!collapsed ? <span className="min-w-0 truncate text-[13px] font-medium">{item.label}</span> : null}
               </Link>
             );
           })}
@@ -230,7 +230,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
       </header>
 
-      <main className={`min-h-screen pt-14 transition-all duration-300 lg:pt-0 ${collapsed ? "lg:pl-[76px]" : "lg:pl-72"}`}>
+      <main className={`min-h-screen pt-14 transition-all duration-300 lg:pt-0 ${collapsed ? "lg:pl-[78px]" : "lg:pl-[286px]"}`}>
         {children}
       </main>
     </div>

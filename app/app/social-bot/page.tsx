@@ -84,19 +84,19 @@ export default function SocialBotPage() {
       <motion.section {...fade} className="studio-card relative overflow-hidden">
         <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-cyan-500/15 blur-3xl" />
         <div className="absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-300">InfluencerAI Studio</p>
-        <h1 className="mt-2 text-3xl font-semibold text-white">Creator Command Dashboard</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-300">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">InfluencerAI Studio</p>
+        <h1 className="mt-2 text-[32px] font-semibold leading-tight text-white">Creator Command Dashboard</h1>
+        <p className="mt-2 max-w-3xl text-[14px] leading-6 text-slate-300">
           Match your legacy workflow: strategy controls, AI characters, content generation, and multi-platform operations in one place.
         </p>
       </motion.section>
 
       <motion.section {...fade} transition={{ duration: 0.25, delay: 0.05 }} className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Total Posts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.total}</p></div>
-        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Drafts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.drafts}</p></div>
-        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Scheduled</p><p className="mt-2 text-3xl font-semibold text-white">{stats.scheduled}</p></div>
-        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Published</p><p className="mt-2 text-3xl font-semibold text-white">{stats.published}</p></div>
-        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Connected Accounts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.connectedAccounts}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Total Posts</p><p className="mt-2 text-[30px] font-semibold leading-none text-white">{stats.total}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Drafts</p><p className="mt-2 text-[30px] font-semibold leading-none text-white">{stats.drafts}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Scheduled</p><p className="mt-2 text-[30px] font-semibold leading-none text-white">{stats.scheduled}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Published</p><p className="mt-2 text-[30px] font-semibold leading-none text-white">{stats.published}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Connected Accounts</p><p className="mt-2 text-[30px] font-semibold leading-none text-white">{stats.connectedAccounts}</p></div>
       </motion.section>
 
       <motion.section {...fade} transition={{ duration: 0.25, delay: 0.1 }} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
