@@ -3,10 +3,6 @@ import OpenAI from "openai";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
 import { getAuthUser, unauthorized } from "../../../lib/auth";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 function addDays(base: Date, days: number) {
   const copy = new Date(base);
   copy.setDate(copy.getDate() + days);
@@ -16,6 +12,12 @@ function addDays(base: Date, days: number) {
 export async function POST(req: NextRequest) {
   if (!(await getAuthUser(req))) return unauthorized();
   try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "OPENAI_API_KEY is not configured" }, { status: 500 });
+    }
+    const openai = new OpenAI({ apiKey });
+
     const supabase = getSupabaseAdmin();
 
     const { data: settings } = await supabase

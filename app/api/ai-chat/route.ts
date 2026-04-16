@@ -3,10 +3,6 @@ import OpenAI from "openai";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
 import { getAuthUser, unauthorized } from "../../../lib/auth";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // Handle AI actions like creating posts, updating settings
 async function handleAction(action: Record<string, string>) {
   const supabase = getSupabaseAdmin();
@@ -72,6 +68,12 @@ async function handleAction(action: Record<string, string>) {
 export async function POST(req: NextRequest) {
   if (!(await getAuthUser(req))) return unauthorized();
   try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "OPENAI_API_KEY is not configured" }, { status: 500 });
+    }
+    const openai = new OpenAI({ apiKey });
+
     const { message, history, userName } = await req.json();
 
     if (!message || typeof message !== "string") {

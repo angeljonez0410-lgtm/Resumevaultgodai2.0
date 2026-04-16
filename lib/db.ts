@@ -72,10 +72,9 @@ export async function deleteApplication(id: string, userId: string) {
 export async function listResumes(userId: string) {
   const sb = getSupabaseAdmin();
   const { data } = await sb
-  const sb = getSupabaseAdmin();
-  const { data } = await sb
     .from("reviews")
     .select("*")
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
   return data || [];
 }

@@ -1,8 +1,16 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error("OPENAI_API_KEY is not configured");
+  }
+  return new OpenAI({ apiKey });
+}
 
 export async function invokeLLM(prompt: string, options?: { jsonSchema?: Record<string, unknown> }) {
+  const openai = getOpenAIClient();
+
   if (options?.jsonSchema) {
     const res = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -25,6 +33,8 @@ export async function invokeLLM(prompt: string, options?: { jsonSchema?: Record<
 }
 
 export async function invokeLLMPremium(prompt: string) {
+  const openai = getOpenAIClient();
+
   const res = await openai.chat.completions.create({
     model: "gpt-4o",
     messages: [{ role: "user", content: prompt }],
