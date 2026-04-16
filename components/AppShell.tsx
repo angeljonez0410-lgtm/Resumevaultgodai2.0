@@ -2,36 +2,86 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { type ComponentType, useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 import {
   Bot,
+  BriefcaseBusiness,
   ChevronLeft,
   ChevronRight,
-  LayoutDashboard,
+  CreditCard,
+  DollarSign,
+  Lightbulb,
   LogOut,
+  Mail,
+  Map,
   Menu,
-  Settings,
+  MessageSquare,
+  Mic,
+  Send,
   Sparkles,
-  Users,
+  TrendingUp,
+  UserCog,
   X,
-  Activity,
-  Share2,
-  FileText,
 } from "lucide-react";
 
-const navItems = [
-  { path: "/app/social-bot", label: "Dashboard", icon: LayoutDashboard },
-  { path: "/app/social-bot/posts", label: "Content Studio", icon: FileText },
-  { path: "/app/social-bot/accounts", label: "Social Accounts", icon: Share2 },
-  { path: "/app/social-bot/characters", label: "AI Characters", icon: Users },
-  { path: "/app/social-bot/logs", label: "Activity Logs", icon: Activity },
-  { path: "/app/social-bot/settings", label: "Settings", icon: Settings },
+const navSections: NavSection[] = [
+  {
+    id: "all",
+    title: "All Features",
+    titleIcon: Sparkles,
+    titleColor: "text-amber-300",
+    items: [
+      { path: "/app/social-bot/posts?mode=cover-letter", label: "Cover Letter", icon: Mail },
+      { path: "/app/social-bot/posts?mode=follow-up", label: "Follow-Up Email", icon: Send },
+      { path: "/app/social-bot", label: "Application Tracker", icon: BriefcaseBusiness },
+      { path: "/app/social-bot/logs", label: "Analytics", icon: TrendingUp },
+      { path: "/app/social-bot/settings?tab=pricing", label: "Pricing", icon: CreditCard },
+      { path: "/app/social-bot/logs?filter=reviews", label: "Reviews", icon: MessageSquare },
+    ],
+  },
+  {
+    id: "premium",
+    title: "PREMIUM",
+    titleIcon: Sparkles,
+    titleColor: "text-amber-300",
+    items: [
+      { path: "/app/social-bot/characters?persona=interview", label: "Interview Coach", icon: Mic, itemColor: "text-amber-200" },
+      { path: "/app/social-bot/characters?persona=salary", label: "Salary Negotiation", icon: DollarSign, itemColor: "text-amber-200" },
+      { path: "/app/social-bot/settings?tab=roadmap", label: "Career Roadmap", icon: Map, itemColor: "text-amber-200" },
+      { path: "/app/social-bot/posts?mode=portfolio", label: "Portfolio Ideas", icon: Lightbulb, itemColor: "text-amber-200" },
+    ],
+  },
+  {
+    id: "admin",
+    title: "ADMIN",
+    titleIcon: Sparkles,
+    titleColor: "text-amber-300",
+    items: [
+      { path: "/app/social-bot/accounts", label: "Admin Users", icon: UserCog, itemColor: "text-rose-300" },
+      { path: "/app/social-bot", label: "Admin AI Assistant", icon: Bot, itemColor: "text-rose-300" },
+    ],
+  },
 ];
 
 type UserState = {
   email?: string;
   id?: string;
+};
+
+type NavItem = {
+  path: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  itemColor?: string;
+};
+
+type NavSection = {
+  id: string;
+  title: string;
+  titleIcon: ComponentType<{ className?: string }>;
+  titleColor: string;
+  items: NavItem[];
 };
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -43,7 +93,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserState | null>(null);
 
   const sidebarWidth = collapsed ? "lg:w-[78px]" : "lg:w-[286px]";
-  const isActive = (path: string) => (path === "/app" ? pathname === "/app" : pathname.startsWith(path));
+  const isActive = (path: string) => {
+    const base = path.split("?")[0];
+    return base === "/app" ? pathname === "/app" : pathname.startsWith(base);
+  };
 
   useEffect(() => {
     async function verifySession() {
@@ -148,11 +201,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-[286px] flex-col border-r border-cyan-500/10 bg-[#0b1220]/95 transition-all duration-300 ${sidebarWidth} ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-[286px] flex-col border-r border-[#2d4666] bg-[#213953] transition-all duration-300 ${sidebarWidth} ${
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="flex h-16 items-center border-b border-cyan-500/10 px-4">
+        <div className="flex h-14 items-center border-b border-[#2d4666] px-4">
           <Link href="/app/social-bot" className="flex min-w-0 items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-cyan-500 to-blue-600">
               <Sparkles className="h-4 w-4 text-white" />
@@ -166,42 +219,61 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        <div className="border-b border-cyan-500/10 px-4 py-3">
+        <div className="border-b border-[#2d4666] px-4 py-3">
           {!collapsed ? (
-            <p className="truncate rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-[11px] text-slate-300">
+            <p className="truncate rounded-full border border-white/10 bg-[#1a2f48] px-3 py-1 text-[11px] text-slate-300">
               {userDisplay}
             </p>
           ) : null}
         </div>
 
-        <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
-          {navItems.map((item) => {
-            const active = isActive(item.path);
-            const Icon = item.icon;
+        <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-4">
+          {navSections.map((section, sectionIndex) => {
+            const SectionIcon = section.titleIcon;
             return (
-              <Link
-                key={`${item.label}-${item.path}`}
-                href={item.path}
-                onClick={() => setMobileOpen(false)}
-                title={collapsed ? item.label : undefined}
-                className={`group relative flex min-h-10 items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 ${
-                  active
-                    ? "bg-cyan-500/15 text-cyan-300 shadow-[0_0_0_1px_rgba(34,211,238,0.25)]"
-                    : "text-slate-400 hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                {active ? <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-cyan-500" /> : null}
-                <Icon className={`h-5 w-5 shrink-0 ${active ? "text-cyan-300" : ""}`} />
-                {!collapsed ? <span className="min-w-0 truncate text-[13px] font-medium">{item.label}</span> : null}
-              </Link>
+              <div key={section.id}>
+                {!collapsed ? (
+                  <div className="mb-2 flex items-center gap-2 px-2">
+                    <SectionIcon className={`h-3.5 w-3.5 ${section.titleColor}`} />
+                    <p className={`text-[11px] font-bold uppercase tracking-[0.16em] ${sectionIndex === 0 ? "text-slate-100 normal-case tracking-normal text-[18px]" : "text-slate-400"}`}>
+                      {section.title}
+                    </p>
+                  </div>
+                ) : null}
+
+                {!collapsed && sectionIndex === 0 ? <div className="mb-2 h-px bg-[#335070]" /> : null}
+
+                <div className="space-y-1.5">
+                  {section.items.map((item) => {
+                    const active = isActive(item.path);
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={`${item.label}-${item.path}`}
+                        href={item.path}
+                        onClick={() => setMobileOpen(false)}
+                        title={collapsed ? item.label : undefined}
+                        className={`group relative flex min-h-10 items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 ${
+                          active
+                            ? "bg-white/10 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.14)]"
+                            : "text-slate-300 hover:bg-white/5 hover:text-white"
+                        }`}
+                      >
+                        <Icon className={`h-4 w-4 shrink-0 ${active ? "text-white" : item.itemColor || "text-slate-200"}`} />
+                        {!collapsed ? <span className="min-w-0 truncate text-[15px] font-medium">{item.label}</span> : null}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </nav>
 
-        <div className="border-t border-cyan-500/10 p-3">
+        <div className="border-t border-[#335070] p-3">
           <button
             onClick={handleSignOut}
-            className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-white"
+            className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
             title={collapsed ? "Sign Out" : undefined}
           >
             <LogOut className="h-5 w-5 shrink-0" />
