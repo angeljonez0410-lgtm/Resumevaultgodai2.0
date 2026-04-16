@@ -47,19 +47,55 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function verifySession() {
-      const token = localStorage.getItem("sb_access_token");
-      if (!token) {
-        router.replace("/login");
-        return;
-      }
+      let token = localStorage.getItem("sb_access_token");
+      let refreshToken = localStorage.getItem("sb_refresh_token");
 
       try {
+        if (!token) {
+          const { data } = await getSupabaseBrowser().auth.getSession();
+          if (data?.session) {
+            token = data.session.access_token;
+            refreshToken = data.session.refresh_token;
+            localStorage.setItem("sb_access_token", token);
+            localStorage.setItem("sb_refresh_token", refreshToken || "");
+            localStorage.setItem(
+              "sb_user",
+              JSON.stringify({ email: data.session.user.email, id: data.session.user.id })
+            );
+          }
+        }
+
+        if (!token) {
+          router.replace("/login");
+          return;
+        }
+
         const res = await fetch("/api/auth/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
         if (!data?.user) {
+          const { data: refreshed } = await getSupabaseBrowser().auth.getSession();
+          if (refreshed?.session?.access_token) {
+            token = refreshed.session.access_token;
+            localStorage.setItem("sb_access_token", token);
+            localStorage.setItem("sb_refresh_token", refreshed.session.refresh_token || "");
+            localStorage.setItem(
+              "sb_user",
+              JSON.stringify({ email: refreshed.session.user.email, id: refreshed.session.user.id })
+            );
+
+            const retry = await fetch("/api/auth/me", {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const retryData = await retry.json();
+            if (retryData?.user) {
+              setUser(retryData.user);
+              return;
+            }
+          }
+
           localStorage.removeItem("sb_access_token");
           localStorage.removeItem("sb_refresh_token");
           localStorage.removeItem("sb_user");
