@@ -31,19 +31,19 @@ export default function SocialBotLogsPage() {
   }, [loadLogs]);
 
   return (
-    <main className="space-y-6">
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <main className="studio-page">
+      <section className="studio-card">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">Activity Logs</h1>
-            <p className="mt-1 text-sm text-slate-600">
+            <h1 className="text-2xl font-semibold text-white">Activity Logs</h1>
+            <p className="mt-1 text-sm text-slate-300">
               Monitor generation events, account connections, publishing, and post actions.
             </p>
           </div>
           <button
             type="button"
             onClick={() => void loadLogs()}
-            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            className="rounded-lg border border-white/15 bg-slate-950 px-4 py-2 text-sm font-semibold text-slate-100 hover:bg-slate-900"
           >
             Refresh
           </button>
@@ -51,7 +51,7 @@ export default function SocialBotLogsPage() {
       </section>
 
       {loading ? (
-        <section className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+        <section className="studio-card text-sm text-slate-300">
           Loading logs...
         </section>
       ) : (

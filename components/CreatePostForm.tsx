@@ -370,11 +370,11 @@ export default function CreatePostForm({ onCreated }: Props) {
   }
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="studio-card">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-semibold text-slate-900">AI Content Studio</h2>
-          <p className="text-sm text-slate-500">
+          <h2 className="text-xl font-semibold text-white">AI Content Studio</h2>
+          <p className="text-sm text-slate-400">
             Generate topic strategy, deep-dive copy, hashtags, and image/video assets in one workflow.
           </p>
         </div>
@@ -389,9 +389,9 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Platform</span>
+          <span className="text-sm font-medium text-slate-300">Platform</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={platform}
             onChange={(e) => setPlatform(e.target.value)}
           >
@@ -403,9 +403,9 @@ export default function CreatePostForm({ onCreated }: Props) {
           </select>
         </label>
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Topic</span>
+          <span className="text-sm font-medium text-slate-300">Topic</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="Example: Product launch story"
@@ -415,18 +415,18 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Description</span>
+          <span className="text-sm font-medium text-slate-300">Description</span>
           <textarea
-            className="min-h-[110px] w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="min-h-[110px] studio-input"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Strategic context for the post."
           />
         </label>
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Deep Dive</span>
+          <span className="text-sm font-medium text-slate-300">Deep Dive</span>
           <textarea
-            className="min-h-[110px] w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="min-h-[110px] studio-input"
             value={deepDive}
             onChange={(e) => setDeepDive(e.target.value)}
             placeholder="Expanded talking points for long-form adaptation."
@@ -436,9 +436,9 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-4">
         <label className="space-y-1 block">
-          <span className="text-sm font-medium text-slate-700">Hashtags</span>
+          <span className="text-sm font-medium text-slate-300">Hashtags</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={hashtags.map((tag) => `#${tag}`).join(" ")}
             onChange={(e) => parseHashtagInput(e.target.value)}
             placeholder="#socialmedia #contentmarketing #growth"
@@ -472,9 +472,9 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-4">
         <label className="space-y-1 block">
-          <span className="text-sm font-medium text-slate-700">Caption</span>
+          <span className="text-sm font-medium text-slate-300">Caption</span>
           <textarea
-            className="min-h-[140px] w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="min-h-[140px] studio-input"
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
             placeholder="Publish-ready caption appears here."
@@ -484,17 +484,17 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Image Prompt</span>
+          <span className="text-sm font-medium text-slate-300">Image Prompt</span>
           <textarea
-            className="min-h-[120px] w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="min-h-[120px] studio-input"
             value={visualPrompt}
             onChange={(e) => setVisualPrompt(e.target.value)}
           />
         </label>
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Video Prompt</span>
+          <span className="text-sm font-medium text-slate-300">Video Prompt</span>
           <textarea
-            className="min-h-[120px] w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="min-h-[120px] studio-input"
             value={videoPrompt}
             onChange={(e) => setVideoPrompt(e.target.value)}
           />
@@ -503,9 +503,9 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Visual Style</span>
+          <span className="text-sm font-medium text-slate-300">Visual Style</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={visualStyle}
             onChange={(e) => setVisualStyle(e.target.value)}
           >
@@ -516,11 +516,11 @@ export default function CreatePostForm({ onCreated }: Props) {
           </select>
         </label>
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Upload Media (Optional)</span>
+          <span className="text-sm font-medium text-slate-300">Upload Media (Optional)</span>
           <input
             type="file"
             accept="image/*,video/*"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) void uploadMediaFile(file);
@@ -548,18 +548,18 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Image URL</span>
+          <span className="text-sm font-medium text-slate-300">Image URL</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             placeholder="https://..."
           />
         </label>
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Video URL</span>
+          <span className="text-sm font-medium text-slate-300">Video URL</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
             placeholder="https://..."
@@ -569,9 +569,9 @@ export default function CreatePostForm({ onCreated }: Props) {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Status</span>
+          <span className="text-sm font-medium text-slate-300">Status</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
@@ -580,10 +580,10 @@ export default function CreatePostForm({ onCreated }: Props) {
           </select>
         </label>
         <label className="space-y-1">
-          <span className="text-sm font-medium text-slate-700">Scheduled Time</span>
+          <span className="text-sm font-medium text-slate-300">Scheduled Time</span>
           <input
             type="datetime-local"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+            className="studio-input"
             value={scheduledTime}
             onChange={(e) => setScheduledTime(e.target.value)}
           />
@@ -599,7 +599,7 @@ export default function CreatePostForm({ onCreated }: Props) {
           Save Post
         </button>
         {(uploading || message) && (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-400">
             {uploading ? "Uploading media..." : message}
           </p>
         )}
@@ -607,3 +607,4 @@ export default function CreatePostForm({ onCreated }: Props) {
     </section>
   );
 }
+

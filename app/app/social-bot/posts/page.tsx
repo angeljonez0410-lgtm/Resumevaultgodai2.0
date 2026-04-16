@@ -38,10 +38,10 @@ export default function SocialBotPostsPage() {
   }
 
   return (
-    <main className="space-y-6">
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-900">Content Studio</h1>
-        <p className="mt-1 text-sm text-slate-600">
+    <main className="studio-page">
+      <section className="studio-card">
+        <h1 className="text-2xl font-semibold text-white">Content Studio</h1>
+        <p className="mt-1 text-sm text-slate-300">
           Build social campaigns with AI briefs, deep-dive strategy, hashtags, and generation-ready prompts.
         </p>
       </section>
@@ -66,9 +66,9 @@ export default function SocialBotPostsPage() {
           }}
         />
         {selectedMedia ? (
-          <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+          <div className="studio-subcard text-sm text-slate-300">
             Selected media:{" "}
-            <a href={selectedMedia} target="_blank" rel="noreferrer" className="font-medium text-cyan-700 underline">
+            <a href={selectedMedia} target="_blank" rel="noreferrer" className="font-medium text-cyan-300 underline">
               {selectedMedia}
             </a>
           </div>

@@ -12,13 +12,13 @@ export default function PostsTable({
   posts: PostEntry[];
 }) {
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h2 className="text-xl font-bold text-gray-900">Posts</h2>
+    <div className="studio-card">
+      <h2 className="text-xl font-bold text-white">Posts</h2>
 
       <div className="mt-4 overflow-x-auto">
-        <table className="min-w-full text-sm">
+        <table className="min-w-full text-sm text-slate-200">
           <thead>
-            <tr className="text-left border-b">
+            <tr className="border-b border-white/10 text-left text-slate-400">
               <th className="py-3 pr-4">Platform</th>
               <th className="py-3 pr-4">Topic</th>
               <th className="py-3 pr-4">Status</th>
@@ -27,19 +27,17 @@ export default function PostsTable({
           </thead>
           <tbody>
             {posts.map((post) => (
-              <tr key={post.id} className="border-b">
+              <tr key={post.id} className="border-b border-white/5">
                 <td className="py-3 pr-4 capitalize">{post.platform}</td>
                 <td className="py-3 pr-4">{post.topic}</td>
                 <td className="py-3 pr-4 capitalize">{post.status}</td>
-                <td className="py-3 pr-4">
-                  {new Date(post.created_at).toLocaleString()}
-                </td>
+                <td className="py-3 pr-4">{new Date(post.created_at).toLocaleString()}</td>
               </tr>
             ))}
 
             {!posts.length && (
               <tr>
-                <td colSpan={4} className="py-6 text-center text-gray-500">
+                <td colSpan={4} className="py-6 text-center text-slate-500">
                   No posts yet
                 </td>
               </tr>

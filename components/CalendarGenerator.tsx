@@ -33,20 +33,18 @@ export default function CalendarGenerator({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h2 className="text-xl font-bold text-gray-900">30-Day Content Calendar</h2>
-      <p className="text-sm text-gray-600 mt-2">
-        Generate 30 scheduled AI post ideas using your current settings.
-      </p>
+    <div className="studio-card">
+      <h2 className="text-xl font-bold text-white">30-Day Content Calendar</h2>
+      <p className="mt-2 text-sm text-slate-300">Generate 30 scheduled AI post ideas using your current settings.</p>
 
       <button
         onClick={handleGenerate}
-        className="mt-4 bg-green-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-green-700"
+        className="mt-4 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700"
       >
         {loading ? "Generating..." : "Generate 30-Day Calendar"}
       </button>
 
-      {message ? <p className="mt-4 text-sm text-gray-600">{message}</p> : null}
+      {message ? <p className="mt-4 text-sm text-slate-300">{message}</p> : null}
     </div>
   );
 }

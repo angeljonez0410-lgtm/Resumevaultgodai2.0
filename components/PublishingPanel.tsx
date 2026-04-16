@@ -36,18 +36,16 @@ export default function PublishingPanel({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h2 className="text-xl font-bold text-gray-900">Scheduled Publishing</h2>
-      <p className="text-sm text-gray-600 mt-2">
-        Manually trigger publishing for all due scheduled posts.
-      </p>
+    <div className="studio-card">
+      <h2 className="text-xl font-bold text-white">Scheduled Publishing</h2>
+      <p className="mt-2 text-sm text-slate-300">Manually trigger publishing for all due scheduled posts.</p>
 
       <div className="mt-4 space-y-4">
         <div>
-          <label className="block text-sm font-semibold mb-1">Cron Secret</label>
+          <label className="mb-1 block text-sm font-semibold text-slate-300">Cron Secret</label>
           <input
             type="password"
-            className="w-full border border-gray-300 rounded-xl px-4 py-3"
+            className="studio-input"
             value={secret}
             onChange={(e) => setSecret(e.target.value)}
             placeholder="Enter CRON_SECRET"
@@ -56,12 +54,12 @@ export default function PublishingPanel({
 
         <button
           onClick={runPublishing}
-          className="bg-orange-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-orange-700"
+          className="rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white hover:bg-orange-700"
         >
           {loading ? "Running..." : "Run Scheduled Publishing"}
         </button>
 
-        {message ? <p className="text-sm text-gray-600">{message}</p> : null}
+        {message ? <p className="text-sm text-slate-300">{message}</p> : null}
       </div>
     </div>
   );

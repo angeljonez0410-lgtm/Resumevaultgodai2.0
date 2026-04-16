@@ -221,20 +221,20 @@ export default function CharacterStudioPage() {
   }
 
   return (
-    <main className="space-y-6">
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-700">AI Character Studio</p>
-        <h1 className="mt-2 text-3xl font-semibold text-slate-900">Create Your Own AI Character</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-600">
+    <main className="studio-page">
+      <section className="studio-card">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-300">AI Character Studio</p>
+        <h1 className="mt-2 text-3xl font-semibold text-white">Create Your Own AI Character</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-300">
           Build custom character profiles with voice, audience targeting, posting style, and a reusable AI system prompt.
           Upload a reference image, generate deep strategy, then use the character in content production.
         </p>
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.3fr_1fr]">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="studio-card">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold text-slate-900">Character Builder</h2>
+            <h2 className="text-xl font-semibold text-white">Character Builder</h2>
             <div className="flex gap-2">
               <button
                 onClick={generateBlueprint}
@@ -395,53 +395,53 @@ export default function CharacterStudioPage() {
         </div>
 
         <div className="space-y-6">
-          <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-slate-900">Saved Characters</h3>
+          <section className="studio-card">
+            <h3 className="text-lg font-semibold text-white">Saved Characters</h3>
             {loading ? (
-              <p className="mt-3 text-sm text-slate-500">Loading...</p>
+              <p className="mt-3 text-sm text-slate-400">Loading...</p>
             ) : profiles.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">No characters saved yet.</p>
+              <p className="mt-3 text-sm text-slate-400">No characters saved yet.</p>
             ) : (
               <div className="mt-4 space-y-3">
                 {profiles.map((profile) => (
-                  <article key={profile.id} className="rounded-lg border border-slate-200 p-3">
+                  <article key={profile.id} className="rounded-lg border border-white/10 bg-slate-950/70 p-3">
                     <div className="flex items-start justify-between gap-3">
                       <button
                         type="button"
                         onClick={() => applyProfile(profile)}
                         className="text-left"
                       >
-                        <p className="text-sm font-semibold text-slate-900">{profile.name}</p>
-                        <p className="mt-1 text-xs text-slate-500">{profile.niche || "General"}</p>
+                        <p className="text-sm font-semibold text-white">{profile.name}</p>
+                        <p className="mt-1 text-xs text-slate-400">{profile.niche || "General"}</p>
                       </button>
                       <button
                         type="button"
                         onClick={() => void deleteProfile(profile.id)}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600"
+                        className="rounded-md p-1.5 text-slate-500 hover:bg-slate-800 hover:text-rose-400"
                         aria-label="Delete profile"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-                    <p className="mt-2 text-xs text-slate-400">Updated {new Date(profile.created_at).toLocaleString()}</p>
+                    <p className="mt-2 text-xs text-slate-500">Updated {new Date(profile.created_at).toLocaleString()}</p>
                   </article>
                 ))}
               </div>
             )}
           </section>
 
-          <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-slate-900">Content Pillars</h3>
+          <section className="studio-card">
+            <h3 className="text-lg font-semibold text-white">Content Pillars</h3>
             {form.contentPillars.length ? (
               <ul className="mt-3 space-y-2">
                 {form.contentPillars.map((pillar) => (
-                  <li key={pillar} className="rounded-md bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                  <li key={pillar} className="rounded-md bg-slate-950 px-3 py-2 text-sm text-slate-300">
                     {pillar}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="mt-3 text-sm text-slate-500">Generate a blueprint to fill this section.</p>
+              <p className="mt-3 text-sm text-slate-400">Generate a blueprint to fill this section.</p>
             )}
           </section>
 

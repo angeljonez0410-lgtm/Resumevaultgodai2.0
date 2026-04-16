@@ -33,37 +33,31 @@ export default function MediaLibrary({
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadFiles();
+    void loadFiles();
   }, [refreshKey]);
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h3 className="text-lg font-bold text-gray-900">Media Library</h3>
+    <div className="studio-card">
+      <h3 className="text-lg font-bold text-white">Media Library</h3>
 
-      {message ? <p className="text-sm text-gray-600 mt-3">{message}</p> : null}
+      {message ? <p className="mt-3 text-sm text-slate-300">{message}</p> : null}
 
-      <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {files.map((file) => (
           <button
             key={file.filePath}
             type="button"
             onClick={() => onSelect(file.publicUrl)}
-            className="border border-gray-200 rounded-xl p-2 text-left hover:border-indigo-500"
+            className="rounded-xl border border-white/10 bg-slate-950/60 p-2 text-left transition hover:border-cyan-400/40"
           >
-            <img
-              src={file.publicUrl}
-              alt={file.name}
-              className="w-full h-32 object-cover rounded-lg"
-            />
-            <p className="text-xs text-gray-600 mt-2 break-all">{file.name}</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={file.publicUrl} alt={file.name} className="h-32 w-full rounded-lg object-cover" />
+            <p className="mt-2 break-all text-xs text-slate-300">{file.name}</p>
           </button>
         ))}
       </div>
 
-      {!files.length ? (
-        <p className="text-sm text-gray-500 mt-4">No uploaded media yet</p>
-      ) : null}
+      {!files.length ? <p className="mt-4 text-sm text-slate-500">No uploaded media yet</p> : null}
     </div>
   );
 }
