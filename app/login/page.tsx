@@ -55,13 +55,18 @@ export default function LoginPage() {
     setError("");
     try {
       const supabase = getSupabaseBrowser();
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (signInError) {
         setError(signInError.message);
       } else {
+        if (data?.session) {
+          localStorage.setItem("sb_access_token", data.session.access_token);
+          localStorage.setItem("sb_refresh_token", data.session.refresh_token);
+          localStorage.setItem("sb_user", JSON.stringify({ email: data.session.user.email, id: data.session.user.id }));
+        }
         window.location.href = "/app";
       }
     } catch {
@@ -79,7 +84,7 @@ export default function LoginPage() {
     setError("");
     try {
       const supabase = getSupabaseBrowser();
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
@@ -87,6 +92,13 @@ export default function LoginPage() {
       if (signUpError) {
         setError(signUpError.message);
       } else {
+        if (data?.session) {
+          localStorage.setItem("sb_access_token", data.session.access_token);
+          localStorage.setItem("sb_refresh_token", data.session.refresh_token);
+          localStorage.setItem("sb_user", JSON.stringify({ email: data.session.user.email, id: data.session.user.id }));
+          window.location.href = "/app";
+          return;
+        }
         setSent(true);
       }
     } catch {
@@ -241,7 +253,13 @@ export default function LoginPage() {
                   </button>
                   <p className="text-center text-xs text-slate-400 mt-2">
                     Don&apos;t have an account?{" "}
-                    <Link href="/login" className="underline text-[#f4c542]">Sign up</Link>
+                    <button
+                      type="button"
+                      onClick={switchToSignup}
+                      className="underline text-[#f4c542]"
+                    >
+                      Sign up
+                    </button>
                   </p>
                 </form>
               )}
@@ -293,8 +311,14 @@ export default function LoginPage() {
                     )}
                   </button>
                   <p className="text-center text-xs text-slate-400 mt-2">
-                    Already have an account?{' '}
-                    <Link href="/login" className="underline text-[#f4c542]">Log in</Link>
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={switchToLogin}
+                      className="underline text-[#f4c542]"
+                    >
+                      Log in
+                    </button>
                   </p>
                 </form>
               )}

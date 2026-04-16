@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     const { data, error } = await supabase
       .from("social_logs")
       .select("*")
+      .neq("action", "character_profile")
       .order("created_at", { ascending: false })
       .limit(20);
 

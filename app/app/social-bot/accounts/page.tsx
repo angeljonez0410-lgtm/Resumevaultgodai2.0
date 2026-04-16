@@ -145,6 +145,27 @@ export default function SocialBotAccountsPage() {
     [loadAccounts]
   );
 
+  const disconnectAll = useCallback(async () => {
+    if (!accounts.length) return;
+    setMessage("");
+
+    try {
+      for (const account of accounts) {
+        // Sequential disconnect keeps API load predictable.
+        // eslint-disable-next-line no-await-in-loop
+        await authFetch("/api/social-accounts", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: account.id }),
+        });
+      }
+      setMessage("All social accounts disconnected.");
+      await loadAccounts();
+    } catch {
+      setMessage("Could not disconnect all accounts");
+    }
+  }, [accounts, loadAccounts]);
+
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-5 py-6 sm:px-6 lg:px-10 lg:py-10">
       <section className="rounded-2xl border border-white/5 bg-slate-900/50 p-6">
@@ -177,13 +198,23 @@ export default function SocialBotAccountsPage() {
             <h2 className="text-xl font-bold text-white">Connect a new account</h2>
             <p className="text-sm text-slate-400">Use a platform token or OAuth-backed credentials.</p>
           </div>
-          <button
-            onClick={loadAccounts}
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/10"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={loadAccounts}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/10"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </button>
+            <button
+              onClick={disconnectAll}
+              disabled={!accounts.length}
+              className="inline-flex items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-2.5 text-sm font-semibold text-rose-100 hover:bg-rose-500/20 disabled:opacity-40"
+            >
+              <Trash2 className="h-4 w-4" />
+              Disconnect All
+            </button>
+          </div>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-500/15 bg-blue-500/10 px-4 py-3">

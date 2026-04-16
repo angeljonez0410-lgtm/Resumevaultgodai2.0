@@ -2,103 +2,195 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import { Bot, Calendar, Home, LogOut, Menu, Settings, User, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
+import {
+  Bot,
+  ChevronLeft,
+  ChevronRight,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Settings,
+  Sparkles,
+  Users,
+  X,
+  Activity,
+  Share2,
+  FileText,
+} from "lucide-react";
 
-const NAV_ITEMS = [
-  { name: "Dashboard", path: "/app/social-bot", icon: Home },
-  { name: "Accounts", path: "/app/social-bot/accounts", icon: User },
-  { name: "Posts", path: "/app/social-bot/posts", icon: Calendar },
-  { name: "Logs", path: "/app/social-bot/logs", icon: Bot },
-  { name: "Settings", path: "/app/social-bot/settings", icon: Settings },
+const navItems = [
+  { path: "/app/social-bot", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/app/social-bot/posts", label: "Content Studio", icon: FileText },
+  { path: "/app/social-bot/accounts", label: "Social Accounts", icon: Share2 },
+  { path: "/app/social-bot/characters", label: "AI Characters", icon: Users },
+  { path: "/app/social-bot/logs", label: "Activity Logs", icon: Activity },
+  { path: "/app/social-bot/settings", label: "Settings", icon: Settings },
 ];
+
+type UserState = {
+  email?: string;
+  id?: string;
+};
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [user, setUser] = useState<UserState | null>(null);
 
-  const isActive = (path: string) => pathname === path;
+  const sidebarWidth = collapsed ? "lg:w-[76px]" : "lg:w-72";
+  const isActive = (path: string) => (path === "/app" ? pathname === "/app" : pathname.startsWith(path));
 
-  const handleSignOut = () => {
+  useEffect(() => {
+    async function verifySession() {
+      const token = localStorage.getItem("sb_access_token");
+      if (!token) {
+        router.replace("/login");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+
+        if (!data?.user) {
+          localStorage.removeItem("sb_access_token");
+          localStorage.removeItem("sb_refresh_token");
+          localStorage.removeItem("sb_user");
+          router.replace("/login");
+          return;
+        }
+
+        setUser(data.user);
+      } catch {
+        router.replace("/login");
+      } finally {
+        setAuthChecking(false);
+      }
+    }
+
+    void verifySession();
+  }, [router]);
+
+  const userDisplay = useMemo(() => user?.email || "Signed-in user", [user]);
+
+  const handleSignOut = async () => {
+    try {
+      await getSupabaseBrowser().auth.signOut();
+    } catch {
+      // Ignore supabase logout errors and clear local session anyway.
+    }
+
     localStorage.removeItem("sb_access_token");
     localStorage.removeItem("sb_refresh_token");
     localStorage.removeItem("sb_user");
     router.push("/login");
   };
 
+  if (authChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-200">
+        <p className="text-sm">Checking your session...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/25 z-40 md:hidden"
-          onClick={() => setSidebarOpen(false)}
+    <div className="min-h-screen bg-slate-950 text-white">
+      {mobileOpen ? (
+        <button
+          aria-label="Close navigation"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          onClick={() => setMobileOpen(false)}
         />
-      )}
+      ) : null}
 
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-900 border-r border-slate-800 transform transition-transform duration-200 flex flex-col ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col border-r border-white/5 bg-slate-950 transition-all duration-300 ${sidebarWidth} ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="px-6 py-5 border-b border-slate-800 flex items-center justify-between">
-          <Link href="/app/social-bot" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-blue-500 text-white flex items-center justify-center">
-              <Bot className="w-5 h-5" />
+        <div className="flex h-16 items-center border-b border-white/5 px-5">
+          <Link href="/app/social-bot" className="flex min-w-0 items-center gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
+              <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <div>
-              <p className="text-white font-semibold leading-tight">Social Bot</p>
-              <p className="text-slate-400 text-xs">Standalone App</p>
-            </div>
+            {!collapsed ? (
+              <span className="truncate text-lg font-semibold tracking-tight text-white">Social Bot Pro</span>
+            ) : null}
           </Link>
-          <button className="md:hidden text-slate-300" onClick={() => setSidebarOpen(false)}>
-            <X className="w-5 h-5" />
+          <button className="ml-auto rounded-lg p-1 text-slate-400 lg:hidden" onClick={() => setMobileOpen(false)}>
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-1">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
+        <div className="border-b border-white/5 px-4 py-3">
+          {!collapsed ? <p className="truncate text-xs text-slate-400">{userDisplay}</p> : null}
+        </div>
+
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+          {navItems.map((item) => {
             const active = isActive(item.path);
+            const Icon = item.icon;
             return (
               <Link
-                key={item.path}
+                key={`${item.label}-${item.path}`}
                 href={item.path}
-                onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition ${
-                  active
-                    ? "bg-blue-500 text-white"
-                    : "text-slate-300 hover:text-white hover:bg-slate-800"
+                onClick={() => setMobileOpen(false)}
+                title={collapsed ? item.label : undefined}
+                className={`group relative flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${
+                  active ? "bg-cyan-500/15 text-cyan-300" : "text-slate-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                <span>{item.name}</span>
+                {active ? <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-cyan-500" /> : null}
+                <Icon className={`h-5 w-5 shrink-0 ${active ? "text-cyan-300" : ""}`} />
+                {!collapsed ? <span className="min-w-0 truncate text-sm font-medium">{item.label}</span> : null}
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-slate-800">
+        <div className="border-t border-white/5 p-3">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800"
+            className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-white"
+            title={collapsed ? "Sign Out" : undefined}
           >
-            <LogOut className="w-4 h-4" />
-            Sign Out
+            <LogOut className="h-5 w-5 shrink-0" />
+            {!collapsed ? <span>Sign Out</span> : null}
           </button>
         </div>
+
+        <button
+          onClick={() => setCollapsed((value) => !value)}
+          className="absolute -right-3 top-20 hidden h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-slate-800 text-slate-400 transition hover:text-white lg:flex"
+          aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+        >
+          {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
+        </button>
       </aside>
 
-      <div className="flex-1 min-w-0">
-        <header className="md:hidden sticky top-0 z-30 bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-          <button className="text-slate-200" onClick={() => setSidebarOpen(true)}>
-            <Menu className="w-5 h-5" />
-          </button>
-          <p className="text-white font-semibold">Social Bot</p>
-          <div className="w-5" />
-        </header>
-        <main className="p-4 md:p-8">{children}</main>
-      </div>
+      <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center border-b border-white/5 bg-slate-950/95 px-4 backdrop-blur lg:hidden">
+        <button className="rounded-lg p-2 text-slate-300" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
+          <Menu className="h-5 w-5" />
+        </button>
+        <Link href="/app/social-bot" className="ml-auto flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
+            <Bot className="h-3.5 w-3.5" />
+          </div>
+          <span className="text-sm font-semibold">Social Bot Pro</span>
+        </Link>
+      </header>
+
+      <main className={`min-h-screen pt-14 transition-all duration-300 lg:pt-0 ${collapsed ? "lg:pl-[76px]" : "lg:pl-72"}`}>
+        {children}
+      </main>
     </div>
   );
 }
