@@ -42,7 +42,7 @@ export default function HomePage() {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
-              href="/login"
+              href="/app/social-bot"
               className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 text-sm font-bold text-slate-950 hover:bg-cyan-400"
             >
               <Sparkles className="h-4 w-4" /> Open Studio

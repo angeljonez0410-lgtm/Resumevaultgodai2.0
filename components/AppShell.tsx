@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { type ComponentType, useEffect, useMemo, useState } from "react";
-import { getSupabaseBrowser } from "@/lib/supabase-browser";
+import { usePathname } from "next/navigation";
+import { type ComponentType, useMemo, useState } from "react";
 import {
   Bot,
   BriefcaseBusiness,
@@ -12,7 +11,6 @@ import {
   CreditCard,
   DollarSign,
   Lightbulb,
-  LogOut,
   Mail,
   Map,
   Menu,
@@ -86,11 +84,12 @@ type NavSection = {
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [authChecking, setAuthChecking] = useState(true);
-  const [user, setUser] = useState<UserState | null>(null);
+  const [user] = useState<UserState | null>({
+    email: "Auto dashboard session",
+    id: "auto-session",
+  });
 
   const sidebarWidth = collapsed ? "lg:w-[78px]" : "lg:w-[286px]";
   const isActive = (path: string) => {
@@ -98,97 +97,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return base === "/app" ? pathname === "/app" : pathname.startsWith(base);
   };
 
-  useEffect(() => {
-    async function verifySession() {
-      let token = localStorage.getItem("sb_access_token");
-      let refreshToken = localStorage.getItem("sb_refresh_token");
-
-      try {
-        if (!token) {
-          const { data } = await getSupabaseBrowser().auth.getSession();
-          if (data?.session) {
-            token = data.session.access_token;
-            refreshToken = data.session.refresh_token;
-            localStorage.setItem("sb_access_token", token);
-            localStorage.setItem("sb_refresh_token", refreshToken || "");
-            localStorage.setItem(
-              "sb_user",
-              JSON.stringify({ email: data.session.user.email, id: data.session.user.id })
-            );
-          }
-        }
-
-        if (!token) {
-          router.replace("/login");
-          return;
-        }
-
-        const res = await fetch("/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-
-        if (!data?.user) {
-          const { data: refreshed } = await getSupabaseBrowser().auth.getSession();
-          if (refreshed?.session?.access_token) {
-            token = refreshed.session.access_token;
-            localStorage.setItem("sb_access_token", token);
-            localStorage.setItem("sb_refresh_token", refreshed.session.refresh_token || "");
-            localStorage.setItem(
-              "sb_user",
-              JSON.stringify({ email: refreshed.session.user.email, id: refreshed.session.user.id })
-            );
-
-            const retry = await fetch("/api/auth/me", {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            const retryData = await retry.json();
-            if (retryData?.user) {
-              setUser(retryData.user);
-              return;
-            }
-          }
-
-          localStorage.removeItem("sb_access_token");
-          localStorage.removeItem("sb_refresh_token");
-          localStorage.removeItem("sb_user");
-          router.replace("/login");
-          return;
-        }
-
-        setUser(data.user);
-      } catch {
-        router.replace("/login");
-      } finally {
-        setAuthChecking(false);
-      }
-    }
-
-    void verifySession();
-  }, [router]);
-
   const userDisplay = useMemo(() => user?.email || "Signed-in user", [user]);
-
-  const handleSignOut = async () => {
-    try {
-      await getSupabaseBrowser().auth.signOut();
-    } catch {
-      // Ignore supabase logout errors and clear local session anyway.
-    }
-
-    localStorage.removeItem("sb_access_token");
-    localStorage.removeItem("sb_refresh_token");
-    localStorage.removeItem("sb_user");
-    router.push("/login");
-  };
-
-  if (authChecking) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-200">
-        <p className="text-sm">Checking your session...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -269,17 +178,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-
-        <div className="border-t border-[#335070] p-3">
-          <button
-            onClick={handleSignOut}
-            className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
-            title={collapsed ? "Sign Out" : undefined}
-          >
-            <LogOut className="h-5 w-5 shrink-0" />
-            {!collapsed ? <span>Sign Out</span> : null}
-          </button>
-        </div>
 
         <button
           onClick={() => setCollapsed((value) => !value)}
