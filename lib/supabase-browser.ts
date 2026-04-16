@@ -1,14 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
-import { formatMissingSupabaseEnv, getSupabasePublicConfig } from "./supabase-config";
 
 let client: ReturnType<typeof createClient> | null = null;
 
 export function getSupabaseBrowser() {
   if (client) return client;
 
-  const { url, anonKey, missing } = getSupabasePublicConfig();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
   if (!url || !anonKey) {
-    throw new Error(formatMissingSupabaseEnv(missing));
+    throw new Error("Missing Supabase browser environment variables");
   }
 
   client = createClient(url, anonKey);

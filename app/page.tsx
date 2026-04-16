@@ -4,17 +4,18 @@ import { Sparkles, Zap, FileText, Search, Mail, Star, ArrowRight } from "lucide-
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#1e2d42] to-[#0f1a2a]">
+      {/* Hero */}
       <div className="max-w-5xl mx-auto px-6 pt-16 pb-12">
         <div className="text-center">
           <div className="inline-flex items-center gap-2 bg-blue-400/20 text-blue-300 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
-            <Zap className="w-4 h-4" /> AI Career Platform
+            <Zap className="w-4 h-4" /> Social Bot Platform
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
-            Build a Better Career<br />
-            <span style={{ color: "#3b82f6" }}>with God Mode AI</span>
+            Automate Your Social Media<br />
+            <span style={{ color: "#3b82f6" }}>with Ease</span>
           </h1>
           <p className="text-lg text-white/70 max-w-2xl mx-auto mb-8">
-            Create stronger resumes, track every application, prepare for interviews, and plan your next move with career tools built for momentum.
+            Social media automation and analytics for your accounts — manage, schedule, and analyze posts with the original social bot.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/login" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-8 py-3.5 rounded-xl text-lg flex items-center gap-2 transition shadow-lg">
@@ -26,10 +27,11 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Stats */}
         <div className="flex justify-center gap-12 mt-16 mb-16">
           {[
-            { value: "10x", label: "Sharper Search" },
-            { value: "24/7", label: "AI Career Help" },
+            { value: "1,000+", label: "Accounts Managed" },
+            { value: "5M+", label: "Posts Scheduled" },
             { value: "4.9/5", label: "User Rating" },
           ].map((s) => (
             <div key={s.label} className="text-center">
@@ -39,12 +41,13 @@ export default function HomePage() {
           ))}
         </div>
 
+        {/* Features */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { icon: Search, title: "Job Tracker", desc: "Keep every opportunity organized" },
-            { icon: FileText, title: "Resume Tools", desc: "Write targeted career materials" },
-            { icon: Mail, title: "Follow-Up Writer", desc: "Send polished job-search emails" },
-            { icon: Star, title: "Interview Coach", desc: "Practice answers with AI feedback" },
+            { icon: Search, title: "Account Analytics", desc: "Track growth and engagement" },
+            { icon: FileText, title: "Post Scheduler", desc: "Automate and schedule your posts" },
+            { icon: Mail, title: "Inbox Manager", desc: "Centralize and manage DMs" },
+            { icon: Star, title: "Performance Insights", desc: "AI-powered analytics and tips" },
           ].map((f) => {
             const Icon = f.icon;
             return (
@@ -59,9 +62,10 @@ export default function HomePage() {
           })}
         </div>
 
+        {/* Footer */}
         <div className="text-center mt-16 pb-8">
           <p className="text-white/30 text-xs">
-            © 2026 ResumeVaultGodAI. All rights reserved.
+            © 2025 Social Bot. All rights reserved.
           </p>
         </div>
       </div>

@@ -1,41 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthUser, unauthorized } from "@/lib/auth";
 import OpenAI from "openai";
+import { getAuthUser, unauthorized } from "@/lib/auth";
 
-const SYSTEM_PROMPT = `You are the ResumeVault GodAI Assistant — an expert career coach, resume consultant, and job search strategist.
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-Your personality: Professional yet friendly, encouraging, and knowledgeable. You give actionable advice.
+const SYSTEM_PROMPT = `You are the Social Bot Assistant, an expert social media strategist and content operations partner.
+
+Your personality:
+- Professional, clear, and practical.
+- Warm and supportive without being vague.
+- Focused on helping the user ship content consistently.
 
 Your expertise includes:
-- ATS (Applicant Tracking System) optimization — you know exactly how to beat them
-- Resume writing and formatting best practices
-- Cover letter crafting
-- Interview preparation (behavioral, technical, case study)
-- Salary negotiation tactics
-- Career transitions and roadmapping
-- Job search strategies (LinkedIn, networking, cold outreach)
-- Portfolio building for tech and creative roles
+- Content strategy and campaign planning
+- Caption writing and hook optimization
+- Platform-specific formatting (Instagram, X, LinkedIn, TikTok, Threads, Reddit)
+- Posting cadence and scheduling strategy
+- Audience targeting and engagement tactics
+- Analytics interpretation and iteration loops
 
-Platform awareness — you can reference these tools available in the app:
-- Job Analyzer: Analyzes job descriptions for ATS keywords
-- Resume Builder: Creates ATS-optimized resumes (98-100% match)
-- Cover Letter Generator: Professional cover letters in multiple tones
-- Follow-Up Email Writer: Post-interview and post-application emails
-- Mock Interview: Practice with AI scoring
-- Interview Coach: Company-specific question preparation
-- Salary Negotiation: Scripts and strategies
-- Career Roadmap: Personalized career planning
-- Auto Apply: Bulk application packages
-- Application Tracker: Track all your applications
+Platform awareness:
+- The user can generate captions, create calendars, manage social accounts, and publish posts.
 
 Rules:
-- Keep answers concise but thorough (2-4 paragraphs max unless explaining something complex)
-- Use bullet points for lists
-- Give specific, actionable advice — not generic fluff
-- If someone asks about a feature, explain it AND offer to help with their specific situation
-- Be encouraging but honest — don't sugarcoat bad resume practices
-- Never make up statistics or fake job listings
-- If you don't know something, say so`;
+- Keep responses actionable and specific.
+- Use concise bullets when helpful.
+- Ask for missing context only when needed to improve output quality.
+- Never invent performance data.
+- If uncertain, say what you need to proceed.`;
 
 export async function POST(req: NextRequest) {
   if (!(await getAuthUser(req))) return unauthorized();
@@ -47,11 +39,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Message required" }, { status: 400 });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json({ error: "OpenAI API key not configured" }, { status: 500 });
-    }
-
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const chatHistory = (history || []).map((m: { role: string; content: string }) => ({
       role: m.role as "user" | "assistant",
       content: m.content,
@@ -68,7 +55,8 @@ export async function POST(req: NextRequest) {
       temperature: 0.7,
     });
 
-    const reply = completion.choices[0]?.message?.content || "I couldn't generate a response. Please try again.";
+    const reply =
+      completion.choices[0]?.message?.content || "I could not generate a response. Please try again.";
 
     return NextResponse.json({ reply });
   } catch {

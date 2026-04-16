@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { authFetch } from "@/lib/auth-fetch";
+import { MessageCircle, Send, Sparkles, X } from "lucide-react";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
 };
 
-export default function AIAssistant({ defaultOpen = false }: { defaultOpen?: boolean }) {
+type ActionResult = {
+  action?: string;
+  success?: boolean;
+  error?: string;
+};
+
+export default function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [isOpen, setIsOpen] = useState(false);
   const [greeted, setGreeted] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -23,47 +29,65 @@ export default function AIAssistant({ defaultOpen = false }: { defaultOpen?: boo
 
   useEffect(() => {
     if (!isOpen || greeted) return;
-
     setGreeted(true);
-    const hour = new Date().getHours();
-    const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-    const user = localStorage.getItem("sb_user");
-    const name = user ? JSON.parse(user).email?.split("@")[0] : "there";
 
     setMessages([
       {
         role: "assistant",
-        content: `${greeting}, ${name}! I'm ARIA, your ResumeVaultGodAI career assistant.\n\nI can help with resumes, job search strategy, interview prep, follow-up emails, portfolios, and career planning.\n\nWhat are we working on today?`,
+        content:
+          "I am your Codex social operator. I can generate strategy briefs, draft and schedule posts, update posting settings, and pull account stats.\n\nTry prompts like:\n- Create 5 launch posts for LinkedIn this week\n- Update posting frequency to 2x daily\n- Generate a campaign for an AI product demo",
       },
     ]);
   }, [isOpen, greeted]);
 
   async function sendMessage() {
     if (!input.trim() || loading) return;
-
     const userMsg: Message = { role: "user", content: input.trim() };
+
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
 
     try {
-      const res = await authFetch("/api/ai-assistant", {
+      const user = localStorage.getItem("sb_user");
+      const userName = user ? JSON.parse(user).email?.split("@")[0] : undefined;
+
+      const res = await authFetch("/api/ai-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: userMsg.content,
-          history: messages.slice(-10),
+          history: messages.slice(-20),
+          userName,
         }),
       });
+
       const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.reply || "Sorry, I couldn't process that. Try again." },
-      ]);
+      if (!res.ok) {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.error || "Could not process that request. Try again." },
+        ]);
+        return;
+      }
+
+      let reply = data.reply || "Done.";
+      if (Array.isArray(data.actions) && data.actions.length) {
+        const actionSummary = (data.actions as ActionResult[])
+          .map((action) =>
+            action.success
+              ? `- completed: ${action.action || "action"}`
+              : `- failed: ${action.action || "action"} (${action.error || "unknown error"})`
+          )
+          .join("\n");
+        reply = `${reply}\n\nExecuted actions:\n${actionSummary}`;
+      }
+
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Connection issue - please try again in a moment." },
+        { role: "assistant", content: "Connection issue. Please try again in a moment." },
       ]);
     } finally {
       setLoading(false);
@@ -74,8 +98,8 @@ export default function AIAssistant({ defaultOpen = false }: { defaultOpen?: boo
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white shadow-xl transition hover:scale-105 hover:shadow-2xl"
-        title="ARIA AI"
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900 text-white shadow-xl hover:bg-slate-800"
+        title="Open Codex Assistant"
       >
         <MessageCircle className="h-6 w-6" />
       </button>
@@ -83,30 +107,28 @@ export default function AIAssistant({ defaultOpen = false }: { defaultOpen?: boo
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex h-[520px] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl">
-      <div className="flex shrink-0 items-center justify-between border-b border-white/5 bg-slate-900 px-4 py-3 text-white">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500">
-            <Sparkles className="h-5 w-5 text-white" />
-          </div>
+    <div className="fixed bottom-6 right-6 z-50 flex h-[560px] w-[390px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
+      <div className="flex items-center justify-between bg-slate-900 px-4 py-3 text-white">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4" />
           <div>
-            <h3 className="text-sm font-bold">ARIA AI</h3>
-            <p className="text-xs text-slate-400">Career co-pilot</p>
+            <p className="text-sm font-semibold">Codex Assistant</p>
+            <p className="text-xs text-slate-300">Social operations and generation</p>
           </div>
         </div>
-        <button onClick={() => setIsOpen(false)} className="text-white/70 transition hover:text-white">
+        <button onClick={() => setIsOpen(false)} className="text-slate-300 hover:text-white">
           <X className="h-5 w-5" />
         </button>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto bg-slate-950 p-4">
+      <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-4">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+              className={`max-w-[85%] whitespace-pre-wrap rounded-xl px-3 py-2.5 text-sm ${
                 msg.role === "user"
-                  ? "rounded-br-sm bg-violet-600 text-white"
-                  : "rounded-bl-sm border border-white/5 bg-slate-900 text-slate-100"
+                  ? "bg-slate-900 text-white"
+                  : "border border-slate-200 bg-white text-slate-700"
               }`}
             >
               {msg.content}
@@ -115,7 +137,7 @@ export default function AIAssistant({ defaultOpen = false }: { defaultOpen?: boo
         ))}
         {loading ? (
           <div className="flex justify-start">
-            <div className="rounded-2xl rounded-bl-sm border border-white/5 bg-slate-900 px-4 py-2.5 text-sm text-slate-400">
+            <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-500">
               Thinking...
             </div>
           </div>
@@ -123,23 +145,22 @@ export default function AIAssistant({ defaultOpen = false }: { defaultOpen?: boo
         <div ref={endRef} />
       </div>
 
-      <div className="shrink-0 border-t border-white/5 bg-slate-900 p-3">
+      <div className="border-t border-slate-200 bg-white p-3">
         <div className="flex gap-2">
           <input
             type="text"
             value={input}
-            onChange={(event) => setInput(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) void sendMessage();
-            }}
-            placeholder="Ask ARIA about resumes, interviews, or jobs..."
-            className="flex-1 rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm text-white outline-none placeholder:text-slate-600 focus:border-violet-500/50"
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
+            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+            placeholder="Ask Codex to plan, generate, or schedule..."
             disabled={loading}
           />
           <button
+            type="button"
             onClick={sendMessage}
             disabled={loading || !input.trim()}
-            className="rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 px-3 py-2.5 text-white transition hover:from-violet-500 hover:to-fuchsia-500 disabled:opacity-40"
+            className="rounded-lg bg-slate-900 px-3 py-2 text-white hover:bg-slate-800 disabled:opacity-40"
           >
             <Send className="h-4 w-4" />
           </button>

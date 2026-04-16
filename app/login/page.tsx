@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Sparkles, Mail, ArrowRight, Shield, Zap, Star, Lock } from "lucide-react";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
-import { storeClientSession } from "@/lib/auth-fetch";
 
 
 export default function LoginPage() {
@@ -12,7 +11,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const [mode, setMode] = useState<"magic" | "password" | "signup">("magic");
 
@@ -57,14 +55,13 @@ export default function LoginPage() {
     setError("");
     try {
       const supabase = getSupabaseBrowser();
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (signInError) {
         setError(signInError.message);
       } else {
-        storeClientSession(data.session);
         window.location.href = "/app";
       }
     } catch {
@@ -82,16 +79,13 @@ export default function LoginPage() {
     setError("");
     try {
       const supabase = getSupabaseBrowser();
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
       });
       if (signUpError) {
         setError(signUpError.message);
-      } else if (data.session) {
-        storeClientSession(data.session);
-        window.location.href = "/app";
       } else {
         setSent(true);
       }
@@ -113,7 +107,7 @@ export default function LoginPage() {
           <div className="w-8 h-8 rounded-lg bg-[#f4c542] flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-[#1e2d42]" />
           </div>
-          <span className="text-white font-bold text-lg">ResumeVault<span className="text-[#3b82f6]">GodAI</span></span>
+          <span className="text-white font-bold text-lg">Social Bot</span>
         </Link>
       </nav>
 
@@ -127,8 +121,8 @@ export default function LoginPage() {
                 <div className="w-16 h-16 rounded-2xl bg-[#f4c542] flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-8 h-8 text-[#1e2d42]" />
                 </div>
-                <h1 className="text-2xl font-bold text-white mb-2">Welcome to ResumeVaultGodAI</h1>
-                <p className="text-slate-300 text-sm">Sign in or sign up to access your AI-powered career toolkit</p>
+                <h1 className="text-2xl font-bold text-white mb-2">Welcome to Social Bot</h1>
+                <p className="text-slate-300 text-sm">Sign in or sign up to manage content, scheduling, and social channels.</p>
               </div>
 
               {/* Login/Signup mode switch */}
@@ -246,7 +240,7 @@ export default function LoginPage() {
                     )}
                   </button>
                   <p className="text-center text-xs text-slate-400 mt-2">
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{" "}
                     <Link href="/login" className="underline text-[#f4c542]">Sign up</Link>
                   </p>
                 </form>

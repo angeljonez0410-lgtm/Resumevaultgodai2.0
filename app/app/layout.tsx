@@ -1,18 +1,16 @@
-
-
 import AppShell from "@/components/AppShell";
-import AIAssistant from "@/components/AIAssistant";
+import AppLayoutClient from "./layout-client";
 
 export const metadata = {
-  title: "ResumeVaultGodAI Dashboard",
-  description: "Build resumes, track applications, prepare for interviews, and grow your career.",
+  title: "Social Bot",
+  description: "Manage accounts, posts, and publishing from one social media dashboard.",
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AppShell>
       {children}
-      <AIAssistant />
+      <AppLayoutClient />
     </AppShell>
   );
 }
