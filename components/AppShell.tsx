@@ -148,11 +148,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col border-r border-white/5 bg-slate-950 transition-all duration-300 ${sidebarWidth} ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col border-r border-cyan-500/10 bg-[#0b1220]/95 transition-all duration-300 ${sidebarWidth} ${
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="flex h-16 items-center border-b border-white/5 px-5">
+        <div className="flex h-16 items-center border-b border-cyan-500/10 px-5">
           <Link href="/app/social-bot" className="flex min-w-0 items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
               <Sparkles className="h-4 w-4 text-white" />
@@ -166,11 +166,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        <div className="border-b border-white/5 px-4 py-3">
-          {!collapsed ? <p className="truncate text-xs text-slate-400">{userDisplay}</p> : null}
+        <div className="border-b border-cyan-500/10 px-4 py-3">
+          {!collapsed ? (
+            <p className="truncate rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-xs text-slate-300">
+              {userDisplay}
+            </p>
+          ) : null}
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
           {navItems.map((item) => {
             const active = isActive(item.path);
             const Icon = item.icon;
@@ -180,8 +184,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 href={item.path}
                 onClick={() => setMobileOpen(false)}
                 title={collapsed ? item.label : undefined}
-                className={`group relative flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${
-                  active ? "bg-cyan-500/15 text-cyan-300" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                className={`group relative flex min-h-10 items-center gap-3 rounded-lg px-3.5 py-2.5 transition-all duration-200 ${
+                  active
+                    ? "bg-cyan-500/15 text-cyan-300 shadow-[0_0_0_1px_rgba(34,211,238,0.25)]"
+                    : "text-slate-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
                 {active ? <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-cyan-500" /> : null}
@@ -192,7 +198,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="border-t border-white/5 p-3">
+        <div className="border-t border-cyan-500/10 p-3">
           <button
             onClick={handleSignOut}
             className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-white"

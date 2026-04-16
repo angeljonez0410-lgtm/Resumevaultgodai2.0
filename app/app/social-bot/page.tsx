@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { authFetch } from "@/lib/auth-fetch";
 import { Activity, CalendarClock, CheckCircle2, Clock3, PlusCircle, Sparkles, Users } from "lucide-react";
@@ -24,6 +25,12 @@ type Account = {
   id: string;
   provider: string;
   status?: string;
+};
+
+const fade = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.25 },
 };
 
 export default function SocialBotPage() {
@@ -74,24 +81,25 @@ export default function SocialBotPage() {
 
   return (
     <main className="studio-page">
-      <section className="studio-card">
+      <motion.section {...fade} className="studio-card relative overflow-hidden">
+        <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-cyan-500/15 blur-3xl" />
+        <div className="absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-300">InfluencerAI Studio</p>
-        <h1 className="mt-2 text-3xl font-semibold text-white">Professional AI Creator Operations Center</h1>
+        <h1 className="mt-2 text-3xl font-semibold text-white">Creator Command Dashboard</h1>
         <p className="mt-2 max-w-3xl text-sm text-slate-300">
-          Run strategy, AI character systems, content production, and multi-platform publishing in one unified studio
-          modeled after your previous InfluencerAI workflow.
+          Match your legacy workflow: strategy controls, AI characters, content generation, and multi-platform operations in one place.
         </p>
-      </section>
+      </motion.section>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <div className="studio-subcard"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Total Posts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.total}</p></div>
-        <div className="studio-subcard"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Drafts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.drafts}</p></div>
-        <div className="studio-subcard"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Scheduled</p><p className="mt-2 text-3xl font-semibold text-white">{stats.scheduled}</p></div>
-        <div className="studio-subcard"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Published</p><p className="mt-2 text-3xl font-semibold text-white">{stats.published}</p></div>
-        <div className="studio-subcard"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Connected Accounts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.connectedAccounts}</p></div>
-      </section>
+      <motion.section {...fade} transition={{ duration: 0.25, delay: 0.05 }} className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Total Posts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.total}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Drafts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.drafts}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Scheduled</p><p className="mt-2 text-3xl font-semibold text-white">{stats.scheduled}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Published</p><p className="mt-2 text-3xl font-semibold text-white">{stats.published}</p></div>
+        <div className="studio-subcard transition hover:-translate-y-0.5"><p className="text-xs uppercase tracking-[0.12em] text-slate-500">Connected Accounts</p><p className="mt-2 text-3xl font-semibold text-white">{stats.connectedAccounts}</p></div>
+      </motion.section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <motion.section {...fade} transition={{ duration: 0.25, delay: 0.1 }} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Link href="/app/social-bot/posts" className="studio-subcard transition hover:-translate-y-0.5 hover:border-cyan-400/30">
           <div className="flex items-center gap-2 text-cyan-300"><PlusCircle className="h-4 w-4" /><h2 className="text-lg font-semibold text-white">Content Studio</h2></div>
           <p className="mt-2 text-sm text-slate-300">Generate topic ideas, captions, deep dives, hashtags, and visual prompts.</p>
@@ -108,9 +116,9 @@ export default function SocialBotPage() {
           <div className="flex items-center gap-2 text-cyan-300"><CheckCircle2 className="h-4 w-4" /><h2 className="text-lg font-semibold text-white">Strategy Settings</h2></div>
           <p className="mt-2 text-sm text-slate-300">Control brand voice, target audience, posting cadence, and automation direction.</p>
         </Link>
-      </section>
+      </motion.section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
+      <motion.section {...fade} transition={{ duration: 0.25, delay: 0.15 }} className="grid gap-4 lg:grid-cols-2">
         <div className="studio-card">
           <div className="flex items-center gap-2"><CalendarClock className="h-4 w-4 text-cyan-300" /><h2 className="text-lg font-semibold text-white">Scheduling Snapshot</h2></div>
           {nextScheduled ? (
@@ -133,7 +141,7 @@ export default function SocialBotPage() {
           ) : logs.length ? (
             <div className="mt-4 space-y-3">
               {logs.slice(0, 5).map((log) => (
-                <div key={log.id} className="rounded-lg border border-white/10 p-3">
+                <div key={log.id} className="rounded-lg border border-white/10 p-3 transition hover:border-cyan-400/30">
                   <p className="text-sm font-medium text-white">{log.action}</p>
                   <p className="mt-1 text-sm text-slate-300">{log.result}</p>
                   <div className="mt-1 inline-flex items-center gap-1 text-xs text-slate-500"><Clock3 className="h-3 w-3" />{new Date(log.created_at).toLocaleString()}</div>
@@ -145,7 +153,7 @@ export default function SocialBotPage() {
           )}
           <Link href="/app/social-bot/logs" className="mt-4 inline-flex text-sm font-semibold text-cyan-300 hover:text-cyan-200">View Full Log History</Link>
         </div>
-      </section>
+      </motion.section>
     </main>
   );
 }
